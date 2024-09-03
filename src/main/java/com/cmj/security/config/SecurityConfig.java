@@ -1,21 +1,30 @@
 package com.cmj.security.config;
 
+import com.cmj.security.domain.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                    CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
-                                                   CustomAccessDeniedHandler customAccessDeniedHandler) throws Exception {
+                                                   CustomAccessDeniedHandler customAccessDeniedHandler,
+                                                    JwtAuthenticationFilter jwtAuthenticationFilter
+                                                   ) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -29,6 +38,7 @@ public class SecurityConfig {
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 
+
                 // 세션 사용 안함
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -38,7 +48,10 @@ public class SecurityConfig {
                         exceptionHandlingConfigurer ->
                                 exceptionHandlingConfigurer
                                         .authenticationEntryPoint(customAuthenticationEntryPoint)
+
                                         .accessDeniedHandler(customAccessDeniedHandler))
+
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();
@@ -52,6 +65,19 @@ public class SecurityConfig {
     @Bean
     CustomAccessDeniedHandler customAccessDeniedHandler() {
         return new CustomAccessDeniedHandler();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
+        AuthenticationManagerBuilder builder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        builder.userDetailsService(userDetailsService);
+        return builder.build();
+    }
+
+    @Bean
+    UserDetailsService userDetailsService(MemberRepository memberRepository) {
+        return new CachedUserDetailsService(memberRepository);
     }
 
 }

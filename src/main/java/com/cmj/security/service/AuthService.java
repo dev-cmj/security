@@ -2,6 +2,7 @@ package com.cmj.security.service;
 
 import com.cmj.security.config.JwtTokenProvider;
 import com.cmj.security.domain.entity.Member;
+import com.cmj.security.domain.entity.Role;
 import com.cmj.security.domain.repository.MemberRepository;
 import com.cmj.security.dto.MemberRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
 
     public Member register(MemberRequest memberRequest) {
+
         return memberRepository.save(
                 Member.builder()
                         .username(memberRequest.username())
@@ -28,6 +30,10 @@ public class AuthService {
                         .email(memberRequest.email())
                         .phone(memberRequest.phone())
                         .address(memberRequest.address())
+                        .role(Role.builder()
+                                .roleName("ROLE_USER")
+                                .build()
+                        )
                         .build()
         );
     }

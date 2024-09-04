@@ -29,14 +29,12 @@ public class Member {
     private String phone;
     private String address;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private Set<String> authorities = Set.of("ROLE_USER");
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "role_id") // Foreign key column to Role table
+    private Role role;
 
     public Set<GrantedAuthority> getAuthorities() {
-        return authorities.stream()
-                .map(authority -> (GrantedAuthority) () -> authority)
-                .collect(Collectors.toSet());
+        return Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()));
     }
 
 

@@ -12,7 +12,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private static final String SECRET_KEY = "your-256-bit-secret";  // 실제 환경에서는 더 복잡한 키를 사용하세요.
+    private static final String SECRET_KEY = "secret_key_for_jwt_token_provider_2024_09_04_12_00_00_need_to_change_this_key_for_security_reasons";
     private static final long EXPIRATION_TIME = 86400000; // 1 day
 
     private static final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

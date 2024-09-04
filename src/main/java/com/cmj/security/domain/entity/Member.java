@@ -6,9 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -21,7 +22,10 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
 
     private String name;
@@ -29,18 +33,13 @@ public class Member {
     private String phone;
     private String address;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "member_roles",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "role_id") // Foreign key column to Role table
+    private Role role;
 
-    // 스프링 시큐리티와 호환되도록 GrantedAuthority를 반환하는 메서드
     public Set<GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .flatMap(role -> role.getAuthorities().stream())
-                .collect(Collectors.toSet());
+        return Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()));
     }
+
+
 }

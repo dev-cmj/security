@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,17 +23,8 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String roleName;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "role_authorities", joinColumns = @JoinColumn(name = "role_id"))
-    @Column(name = "authority")
-    private Set<String> authorities;
-
-    // 스프링 시큐리티와 호환되도록 GrantedAuthority를 반환하는 메서드
-    public Set<GrantedAuthority> getAuthorities() {
-        return authorities.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
-    }
+    @OneToMany(mappedBy = "role")
+    private Set<Member> members = new HashSet<>();
 }

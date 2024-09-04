@@ -29,18 +29,15 @@ public class Member {
     private String phone;
     private String address;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "member_roles",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private Set<String> authorities = Set.of("ROLE_USER");
 
-    // 스프링 시큐리티와 호환되도록 GrantedAuthority를 반환하는 메서드
     public Set<GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .flatMap(role -> role.getAuthorities().stream())
+        return authorities.stream()
+                .map(authority -> (GrantedAuthority) () -> authority)
                 .collect(Collectors.toSet());
     }
+
+
 }

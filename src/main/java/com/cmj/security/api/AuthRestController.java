@@ -1,17 +1,16 @@
 package com.cmj.security.api;
 
-import com.cmj.security.config.JwtTokenProvider;
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.dto.MemberRequest;
 import com.cmj.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -29,8 +28,13 @@ public class AuthRestController {
 
 
     @PostMapping("/login")
-    public String login(@RequestBody MemberRequest memberRequest) {
-        return authService.login(memberRequest.username(), memberRequest.password());
+    public ResponseEntity<Void> login(@RequestBody MemberRequest memberRequest) {
+        String token = authService.login(memberRequest.username(), memberRequest.password());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        return ResponseEntity.ok().headers(headers).build();
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,19 +42,19 @@ public class AuthService {
     }
 
     public String login(String username, String password) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String && authentication.getPrincipal().equals("anonymousUser"))) {
+            throw new RuntimeException("Already logged in");
+        }
+
         try {
             // 사용자 인증
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
-
-            if (authentication.isAuthenticated()) {
-                return jwtTokenProvider.generateToken(username);
-            } else {
-                throw new RuntimeException("Invalid Login Details");
-            }
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            return jwtTokenProvider.generateToken(username);
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Invalid Login Details");
+            throw new RuntimeException("Invalid username/password supplied");
         }
     }
 

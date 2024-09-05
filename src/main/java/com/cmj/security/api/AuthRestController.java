@@ -22,7 +22,6 @@ public class AuthRestController {
 
     @PostMapping("/register")
     public Member register(@RequestBody MemberRequest memberRequest) {
-        log.info("memberRequest: {}", memberRequest);
         return authService.register(memberRequest);
     }
 

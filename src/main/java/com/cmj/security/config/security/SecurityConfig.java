@@ -1,5 +1,6 @@
 package com.cmj.security.config.security;
 
+import com.cmj.security.config.security.jwt.JwtAuthenticationFilter;
 import com.cmj.security.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +40,6 @@ public class SecurityConfig {
                                         .anyRequest().authenticated())
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-
 
                 // 세션 사용 안함
                 .sessionManagement(sessionManagement ->

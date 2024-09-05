@@ -1,6 +1,6 @@
 package com.cmj.security.service;
 
-import com.cmj.security.config.security.JwtTokenProvider;
+import com.cmj.security.config.security.jwt.JwtTokenProvider;
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.domain.entity.Role;
 import com.cmj.security.domain.repository.MemberRepository;

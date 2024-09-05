@@ -1,4 +1,4 @@
-package com.cmj.security.config;
+package com.cmj.security.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

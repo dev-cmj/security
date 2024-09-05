@@ -1,4 +1,4 @@
-package com.cmj.security.config;
+package com.cmj.security.config.security;
 
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.domain.repository.MemberRepository;

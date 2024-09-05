@@ -1,4 +1,4 @@
-package com.cmj.security.config;
+package com.cmj.security.config.security;
 
 import com.cmj.security.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

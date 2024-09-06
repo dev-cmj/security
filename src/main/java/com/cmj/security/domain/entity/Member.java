@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -42,6 +43,26 @@ public class Member extends BaseEntity {
 
     public Set<GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()));
+    }
+
+    public static Role setRole(Roles role) {
+        return Role.builder()
+                .roleName(role.name())
+                .build();
+    }
+
+    public void updatePassword(String password) {
+        this.password = StringUtils.isEmpty(password) ? this.password : password;
+    }
+
+    public void updateEmail(String email) {
+        this.email = StringUtils.isEmpty(email) ? this.email : email;
+    }
+
+    public void update(String name, String phone, String address) {
+        this.name = StringUtils.isEmpty(name) ? this.name : name;
+        this.phone = StringUtils.isEmpty(phone) ? this.phone : phone;
+        this.address = StringUtils.isEmpty(address) ? this.address : address;
     }
 
 

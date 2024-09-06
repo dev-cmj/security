@@ -1,36 +1,65 @@
 package com.cmj.security.config.security.oauth2;
 
+import com.cmj.security.config.security.CachedUserDetailsService;
+import com.cmj.security.domain.entity.Member;
+import com.cmj.security.domain.entity.Roles;
 import com.cmj.security.domain.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.Optional;
+
+@Transactional
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
+    private final CachedUserDetailsService cachedUserDetailsService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        // 사용자 정보를 로드하는 로직 구현 (e.g. 사용자 데이터베이스에 저장 등)
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
                 .getUserInfoEndpoint().getUserNameAttributeName();
 
-        // 사용자 정보를 파싱하여 처리하는 로직
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oAuth2User.getAttributes());
 
-        // 사용자 DB에 저장 또는 업데이트하는 로직 구현
-        // Member member = processOAuth2User(userInfo);
+        if (userInfo.getEmail() == null || userInfo.getEmail().isEmpty()) {
+            throw new OAuth2AuthenticationException("이메일 정보가 제공되지 않았습니다.");
+        }
 
-        return oAuth2User;
+        Optional<Member> existingMember = memberRepository.findByEmail(userInfo.getEmail());
+
+        Member member = existingMember.map(value -> updateExistingMember(value, userInfo))
+                .orElseGet(() -> registerNewMember(userInfo));
+
+        UserDetails userDetails = cachedUserDetailsService.loadUserByUsername(member.getUsername());
+
+        return new DefaultOAuth2User(userDetails.getAuthorities(), oAuth2User.getAttributes(), userNameAttributeName);
     }
 
-    // 사용자 정보를 처리하는 메소드 구현 (생성 또는 업데이트)
+    private Member updateExistingMember(Member existingMember, OAuth2UserInfo userInfo) {
+        existingMember.update(userInfo.getName(), null, null);
+        return memberRepository.save(existingMember);
+    }
+
+    // 새로운 사용자를 등록하는 메소드
+    private Member registerNewMember(OAuth2UserInfo userInfo) {
+        Member member = Member.builder()
+                .email(userInfo.getEmail())
+                .name(userInfo.getName())
+                .role(Member.setRole(Roles.ROLE_USER))  // 기본 사용자 권한 부여
+                .build();
+
+        return memberRepository.save(member);
+    }
 }

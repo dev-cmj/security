@@ -2,6 +2,7 @@ package com.cmj.security.api;
 
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.dto.MemberRequest;
+import com.cmj.security.dto.MemberResponse;
 import com.cmj.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,7 @@ public class AuthRestController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public Member register(@RequestBody MemberRequest memberRequest) {
-        log.info("memberRequest: {}", memberRequest);
+    public MemberResponse register(@RequestBody MemberRequest memberRequest) {
         return authService.register(memberRequest);
     }
 

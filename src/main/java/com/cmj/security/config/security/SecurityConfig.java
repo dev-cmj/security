@@ -1,5 +1,7 @@
 package com.cmj.security.config.security;
 
+import com.cmj.security.config.security.jwt.JwtAuthenticationFilter;
+import com.cmj.security.config.security.oauth2.CustomOAuth2UserService;
 import com.cmj.security.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +27,10 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                    CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
                                                    CustomAccessDeniedHandler customAccessDeniedHandler,
-                                                    JwtAuthenticationFilter jwtAuthenticationFilter
-                                                   ) throws Exception {
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                   MemberRepository memberRepository,
+                                                   CachedUserDetailsService cachedUserDetailsService
+    ) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -40,7 +44,6 @@ public class SecurityConfig {
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 
-
                 // 세션 사용 안함
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,6 +55,14 @@ public class SecurityConfig {
                                         .authenticationEntryPoint(customAuthenticationEntryPoint)
 
                                         .accessDeniedHandler(customAccessDeniedHandler))
+
+//                .oauth2Login(oauth2Login ->
+//                        oauth2Login
+//                                .userInfoEndpoint(userInfoEndpoint ->
+//                                        userInfoEndpoint
+//                                                .userService(defaultOAuth2UserService(memberRepository, cachedUserDetailsService))
+//                                )
+//                )
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
@@ -83,8 +94,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService(MemberRepository memberRepository) {
+    CachedUserDetailsService userDetailsService(MemberRepository memberRepository) {
         return new CachedUserDetailsService(memberRepository);
+    }
+
+    @Bean
+    CustomOAuth2UserService defaultOAuth2UserService(MemberRepository memberRepository, CachedUserDetailsService cachedUserDetailsService) {
+        return new CustomOAuth2UserService(memberRepository, cachedUserDetailsService);
     }
 
 }

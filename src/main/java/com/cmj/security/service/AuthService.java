@@ -1,10 +1,12 @@
 package com.cmj.security.service;
 
-import com.cmj.security.config.security.JwtTokenProvider;
+import com.cmj.security.config.security.jwt.JwtTokenProvider;
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.domain.entity.Role;
+import com.cmj.security.domain.entity.Roles;
 import com.cmj.security.domain.repository.MemberRepository;
 import com.cmj.security.dto.MemberRequest;
+import com.cmj.security.dto.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,9 +25,9 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Member register(MemberRequest memberRequest) {
+    public MemberResponse register(MemberRequest memberRequest) {
 
-        return memberRepository.save(
+        Member member = memberRepository.save(
                 Member.builder()
                         .username(memberRequest.username())
                         .password(passwordEncoder.encode(memberRequest.password()))
@@ -33,12 +35,11 @@ public class AuthService {
                         .email(memberRequest.email())
                         .phone(memberRequest.phone())
                         .address(memberRequest.address())
-                        .role(Role.builder()
-                                .roleName("ROLE_USER")
-                                .build()
-                        )
+                        .role(Role.builder().roleName(Roles.ROLE_USER.name()).build())
                         .build()
         );
+
+        return MemberResponse.of(member);
     }
 
     public String login(String username, String password) {

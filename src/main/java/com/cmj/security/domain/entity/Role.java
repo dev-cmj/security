@@ -27,5 +27,6 @@ public class Role {
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.PERSIST)
     @JsonIgnore
+    @Builder.Default
     private Set<Member> members = new HashSet<>();
 }

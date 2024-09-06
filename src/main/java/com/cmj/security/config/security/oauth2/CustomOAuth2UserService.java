@@ -2,6 +2,7 @@ package com.cmj.security.config.security.oauth2;
 
 import com.cmj.security.config.security.CachedUserDetailsService;
 import com.cmj.security.domain.entity.Member;
+import com.cmj.security.domain.entity.Role;
 import com.cmj.security.domain.entity.Roles;
 import com.cmj.security.domain.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -57,7 +58,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Member member = Member.builder()
                 .email(userInfo.getEmail())
                 .name(userInfo.getName())
-                .role(Member.setRole(Roles.ROLE_USER))  // 기본 사용자 권한 부여
+                .role(Role.builder().roleName(Roles.ROLE_USER.name()).build())// 기본 사용자 권한 부여
                 .build();
 
         return memberRepository.save(member);

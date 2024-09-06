@@ -1,5 +1,6 @@
 package com.cmj.security.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Getter
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password", "role"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Member extends BaseEntity {
 
     @Id
@@ -28,6 +29,7 @@ public class Member extends BaseEntity {
     private String username;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     private String name;
@@ -39,16 +41,11 @@ public class Member extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id")
+    @JsonIgnore
     private Role role;
 
     public Set<GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()));
-    }
-
-    public static Role setRole(Roles role) {
-        return Role.builder()
-                .roleName(role.name())
-                .build();
     }
 
     public void updatePassword(String password) {

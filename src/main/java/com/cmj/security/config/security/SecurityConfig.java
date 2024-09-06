@@ -4,7 +4,6 @@ import com.cmj.security.config.security.jwt.JwtAuthenticationFilter;
 import com.cmj.security.config.security.oauth2.CustomOAuth2UserService;
 import com.cmj.security.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -29,8 +27,10 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                    CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
                                                    CustomAccessDeniedHandler customAccessDeniedHandler,
-                                                    JwtAuthenticationFilter jwtAuthenticationFilter
-                                                   ) throws Exception {
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                   MemberRepository memberRepository,
+                                                   CachedUserDetailsService cachedUserDetailsService
+    ) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -55,6 +55,14 @@ public class SecurityConfig {
                                         .authenticationEntryPoint(customAuthenticationEntryPoint)
 
                                         .accessDeniedHandler(customAccessDeniedHandler))
+
+//                .oauth2Login(oauth2Login ->
+//                        oauth2Login
+//                                .userInfoEndpoint(userInfoEndpoint ->
+//                                        userInfoEndpoint
+//                                                .userService(defaultOAuth2UserService(memberRepository, cachedUserDetailsService))
+//                                )
+//                )
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;

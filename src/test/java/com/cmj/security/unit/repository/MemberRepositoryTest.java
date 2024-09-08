@@ -1,4 +1,4 @@
-package com.cmj.security;
+package com.cmj.security.unit.repository;
 
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.domain.entity.Role;
@@ -56,21 +56,41 @@ class MemberRepositoryTest {
         }
     }
 
-//    @Test
-//    void update() {
-//        Optional<Member> member = memberRepository.findByUsername("test1");
-//        member.ifPresent(m -> {
-//            m.update(Member.builder()
-//                    .password("5678")
-//                    .build());
-//            memberRepository.save(m);
-//        });
-//
-//        Optional<Member> updatedMember = memberRepository.findByUsername("test1");
-//        updatedMember.ifPresent(m -> {
-//            Assertions.assertThat(m.getPassword()).isEqualTo("5678");
-//        });
-//    }
+    @Test
+    void updatePassword() {
+        Optional<Member> member = memberRepository.findByUsername("test1");
+        member.ifPresent(m -> {
+            m.updatePassword("5678");
+        });
 
+        Optional<Member> updatedMember = memberRepository.findByUsername("test1");
+        updatedMember.ifPresent(m -> {
+            Assertions.assertThat(m.getPassword()).isEqualTo("5678");
+        });
+    }
+
+    @Test
+    void updateUserInfo() {
+        Optional<Member> member = memberRepository.findByUsername("test1");
+        member.ifPresent(m -> {
+            m.update("test2", "010-1234-5678", "서울 강남구");
+        });
+
+        Optional<Member> updatedMember = memberRepository.findByUsername("test1");
+
+        updatedMember.ifPresent(m -> {
+            Assertions.assertThat(m.getName()).isEqualTo("test2");
+            Assertions.assertThat(m.getPhone()).isEqualTo("010-1234-5678");
+            Assertions.assertThat(m.getAddress()).isEqualTo("서울 강남구");
+        });
+
+    }
+
+    @Test
+    void deleteByUsername() {
+        memberRepository.deleteByUsername("test5");
+        Optional<Member> member = memberRepository.findByUsername("test5");
+        Assertions.assertThat(member.isPresent()).isFalse();
+    }
 
 }

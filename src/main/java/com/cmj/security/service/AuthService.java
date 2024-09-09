@@ -4,7 +4,6 @@ import com.cmj.security.config.security.jwt.JwtTokenProvider;
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.dto.MemberRequest;
 import com.cmj.security.dto.MemberResponse;
-import com.cmj.security.exception.CoreException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -3,6 +3,8 @@ package com.cmj.security.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +21,7 @@ import java.util.Set;
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Member extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Member extends BaseAuditableEntity {
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -36,6 +34,7 @@ public class Member extends BaseEntity {
 
     @Column(unique = true)
     private String email;
+
     private String phone;
     private String address;
 

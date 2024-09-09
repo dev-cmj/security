@@ -1,23 +1,30 @@
 package com.cmj.security.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
 @SuperBuilder
 @NoArgsConstructor
-public abstract class BaseEntity extends BaseTimeEntity {
+public abstract class BaseEntity {
 
-    @CreatedBy
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @CreatedDate
     @Column(updatable = false)
-    private String createdBy;
+    private LocalDateTime createdAt;
 
-    @LastModifiedBy
-    private String lastModifiedBy;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }

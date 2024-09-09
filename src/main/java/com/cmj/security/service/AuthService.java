@@ -8,6 +8,7 @@ import com.cmj.security.domain.repository.MemberRepository;
 import com.cmj.security.dto.MemberRequest;
 import com.cmj.security.dto.MemberResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,14 +16,18 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
     public MemberResponse register(MemberRequest memberRequest) {
@@ -59,6 +64,7 @@ public class AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.generateToken(username);
         } catch (AuthenticationException e) {
+            log.error(e.getMessage());
             throw new RuntimeException("invalid.username.or.password");
         }
     }
@@ -67,8 +73,8 @@ public class AuthService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-            Member member = memberRepository.findByUsername(username)
-                    .orElseThrow(() -> new RuntimeException("user.not.found"));
+            Member member = memberService.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("can't find user. username: " + username));
 
             member.changePassword(passwordEncoder.encode(password));
 

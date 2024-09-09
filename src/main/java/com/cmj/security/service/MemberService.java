@@ -4,6 +4,7 @@ import com.cmj.security.domain.entity.Member;
 import com.cmj.security.domain.repository.MemberRepository;
 import com.cmj.security.dto.MemberRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -22,6 +23,7 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    @Cacheable(cacheNames = "members", key = "#username", unless = "#result == null")
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }

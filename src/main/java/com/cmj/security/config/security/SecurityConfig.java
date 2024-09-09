@@ -3,6 +3,7 @@ package com.cmj.security.config.security;
 import com.cmj.security.config.security.jwt.JwtAuthenticationFilter;
 import com.cmj.security.config.security.oauth2.CustomOAuth2UserService;
 import com.cmj.security.domain.repository.MemberRepository;
+import com.cmj.security.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -94,8 +95,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    CachedUserDetailsService userDetailsService(MemberRepository memberRepository) {
-        return new CachedUserDetailsService(memberRepository);
+    CachedUserDetailsService userDetailsService(MemberService memberService) {
+        return new CachedUserDetailsService(memberService);
     }
 
     @Bean

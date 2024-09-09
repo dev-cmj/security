@@ -4,12 +4,8 @@ import com.cmj.security.dto.ErrorResponse;
 import com.cmj.security.message.MessageProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Locale;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -19,6 +15,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class RestControllerExceptionHandler {
 
     private final MessageProvider messageProvider;
+
 
     @ExceptionHandler(RuntimeException.class)
     public ErrorResponse handleRuntimeException(RuntimeException e) {
@@ -31,4 +28,5 @@ public class RestControllerExceptionHandler {
                 .status(INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .build();
     }
+
 }

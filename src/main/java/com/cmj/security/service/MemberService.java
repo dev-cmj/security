@@ -28,4 +28,22 @@ public class MemberService {
         return memberRepository.findByUsername(username);
     }
 
+    @Transactional
+    public Member save(MemberRequest memberRequest) {
+        return memberRepository.save(
+                Member.builder()
+                        .username(memberRequest.username())
+                        .password(memberRequest.password())
+                        .name(memberRequest.name())
+                        .email(memberRequest.email())
+                        .phone(memberRequest.phone())
+                        .address(memberRequest.address())
+                        .build()
+        );
+    }
+
+    public boolean existsByUsername(String username) {
+        return memberRepository.existsByUsername(username);
+    }
+
 }

@@ -1,11 +1,9 @@
 package com.cmj.security.config.security;
 
 import com.cmj.security.domain.entity.Member;
-import com.cmj.security.domain.repository.MemberRepository;
 import com.cmj.security.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

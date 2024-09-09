@@ -17,8 +17,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         // 요청의 Accept 헤더를 가져옴
         String accept = request.getHeader("Content-Type");
 
-        System.out.println("accept = " + accept);
-
         // 요청이 JSON 형식을 원할 경우
         if (accept != null && accept.contains("application/json")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

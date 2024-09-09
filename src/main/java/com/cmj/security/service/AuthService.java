@@ -27,6 +27,10 @@ public class AuthService {
 
     public MemberResponse register(MemberRequest memberRequest) {
 
+        if (memberRepository.existsByUsername(memberRequest.username())) {
+            throw new RuntimeException("user.already.registered");
+        }
+
         Member member = memberRepository.save(
                 Member.builder()
                         .username(memberRequest.username())
@@ -47,7 +51,7 @@ public class AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String && authentication.getPrincipal().equals("anonymousUser"))) {
-            throw new RuntimeException("Already logged in");
+            throw new RuntimeException("user.already.logged.in");
         }
 
         try {
@@ -55,7 +59,21 @@ public class AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.generateToken(username);
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Invalid username/password supplied");
+            throw new RuntimeException("invalid.username.or.password");
+        }
+    }
+
+    public void changePassword(String username, String password) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
+            Member member = memberRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("user.not.found"));
+
+            member.changePassword(passwordEncoder.encode(password));
+
+        } catch (AuthenticationException e) {
+            throw new RuntimeException("invalid.username.or.password");
         }
     }
 

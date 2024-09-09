@@ -48,11 +48,11 @@ public class Member extends BaseEntity {
         return Collections.singleton(new SimpleGrantedAuthority(role.getRoleName()));
     }
 
-    public void updatePassword(String password) {
+    public void changePassword(String password) {
         this.password = StringUtils.isEmpty(password) ? this.password : password;
     }
 
-    public void updateEmail(String email) {
+    public void changeEmail(String email) {
         this.email = StringUtils.isEmpty(email) ? this.email : email;
     }
 

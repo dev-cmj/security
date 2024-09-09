@@ -22,7 +22,7 @@ public class CachedUserDetailsService implements UserDetailsService {
         Member member = findMemberByUsername(username);
 
         if (member == null) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("can't find user. username: " + username);
         }
 
         return User.builder()

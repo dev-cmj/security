@@ -1,12 +1,10 @@
 package com.cmj.security.api;
 
 import com.cmj.security.domain.entity.Member;
+import com.cmj.security.dto.MemberRequest;
 import com.cmj.security.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +22,6 @@ public class MemberRestController {
 
     @GetMapping("{username}")
     public Member findByUsername(@PathVariable String username) {
-        return memberService.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        return memberService.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("user.not.found"));
     }
 }

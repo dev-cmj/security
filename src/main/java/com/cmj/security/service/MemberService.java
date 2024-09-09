@@ -2,7 +2,9 @@ package com.cmj.security.service;
 
 import com.cmj.security.domain.entity.Member;
 import com.cmj.security.domain.repository.MemberRepository;
+import com.cmj.security.dto.MemberRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

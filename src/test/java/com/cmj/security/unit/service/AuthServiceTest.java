@@ -1,12 +1,11 @@
 package com.cmj.security.unit.service;
 
-import com.cmj.security.config.security.jwt.JwtTokenProvider;
-import com.cmj.security.domain.entity.Member;
-import com.cmj.security.domain.entity.Role;
-import com.cmj.security.domain.repository.MemberRepository;
-import com.cmj.security.dto.MemberRequest;
-import com.cmj.security.dto.MemberResponse;
-import com.cmj.security.service.AuthService;
+import com.cmj.security.global.config.security.jwt.JwtTokenProvider;
+import com.cmj.security.domain.member.entity.Member;
+import com.cmj.security.domain.member.repository.MemberRepository;
+import com.cmj.security.domain.member.dto.MemberRequest;
+import com.cmj.security.domain.member.dto.MemberResponse;
+import com.cmj.security.domain.auth.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

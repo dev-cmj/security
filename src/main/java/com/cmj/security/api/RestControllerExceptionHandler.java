@@ -1,6 +1,6 @@
 package com.cmj.security.api;
 
-import com.cmj.security.dto.ErrorResponse;
+import com.cmj.security.global.common.ErrorResponse;
 import com.cmj.security.message.MessageProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

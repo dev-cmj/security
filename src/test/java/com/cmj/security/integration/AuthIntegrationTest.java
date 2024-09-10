@@ -1,7 +1,7 @@
 package com.cmj.security.integration;
 
-import com.cmj.security.dto.MemberRequest;
-import com.cmj.security.dto.MemberResponse;
+import com.cmj.security.domain.member.dto.MemberRequest;
+import com.cmj.security.domain.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

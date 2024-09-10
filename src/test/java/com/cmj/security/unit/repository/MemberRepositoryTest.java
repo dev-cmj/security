@@ -1,8 +1,7 @@
 package com.cmj.security.unit.repository;
 
-import com.cmj.security.domain.entity.Member;
-import com.cmj.security.domain.entity.Role;
-import com.cmj.security.domain.repository.MemberRepository;
+import com.cmj.security.domain.member.entity.Member;
+import com.cmj.security.domain.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

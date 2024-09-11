@@ -3,6 +3,7 @@ package com.cmj.app.domain.member.entity;
 import com.cmj.app.domain.token.entity.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,4 +34,19 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+    public void addRefreshToken(RefreshToken refreshToken) {
+        refreshTokens.add(refreshToken);
+    }
+
+    public void removeRefreshToken(RefreshToken refreshToken) {
+        refreshTokens.remove(refreshToken);
+    }
+
+    public void update(Member member, PasswordEncoder passwordEncoder) {
+        this.username = member.getUsername();
+        this.password = passwordEncoder.encode(member.getPassword());
+        this.email = member.getEmail();
+        this.role = member.getRole();
+    }
 }

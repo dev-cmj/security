@@ -30,8 +30,12 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (request) ->
-                                request.requestMatchers(AntPathRequestMatcher.antMatcher("/api/auth/**")).permitAll()
+                                request.requestMatchers(AntPathRequestMatcher.antMatcher("/api/**")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher("/css/**")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher("/js/**")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher("/images/**")).permitAll()
                                         .anyRequest().authenticated())
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))

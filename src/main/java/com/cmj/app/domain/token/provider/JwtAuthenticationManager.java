@@ -17,8 +17,6 @@ import java.util.Date;
 public class JwtAuthenticationManager {
     private final MemberService memberService;
 
-//    private final LogoutAccessTokenService logoutAccessTokenService;
-
     private final JwtTokenProvider jwtTokenProvider;
 
     public Authentication getAuthentication(String jwt) {
@@ -41,14 +39,9 @@ public class JwtAuthenticationManager {
             throw new TokenCheckFailException(ExceptionMessage.FAIL_TOKEN_CHECK.getMessage());
         } else if (this.jwtTokenProvider.isTokenExpired(token)) {
             throw new TokenCheckFailException(ExceptionMessage.TOKEN_VALID_TIME_EXPIRED.getMessage());
-        } else if (checkLogout(token)) {
-            throw new TokenCheckFailException(ExceptionMessage.ALREADY_LOGOUT_USER.getMessage());
         }
+
         return true;
     }
 
-    private boolean checkLogout(String token) {
-//        return logoutAccessTokenService.existsLogoutAccessTokenById(token);
-        return true;
-    }
 }

@@ -30,27 +30,37 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
+    @Override
     public Member findById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
+    @Override
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
+    @Override
+    public boolean existsByUsername(String username) {
+        return memberRepository.existsByUsername(username);
+    }
+
     @Transactional
+    @Override
     public void save(Member member) {
         memberRepository.save(member);
     }
 
     @Transactional
+    @Override
     public void update(Member member) {
         member.update(member, passwordEncoder);
     }
 
     @Transactional
+    @Override
     public void delete(Member member) {
         memberRepository.delete(member);
     }

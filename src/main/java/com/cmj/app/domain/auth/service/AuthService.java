@@ -10,6 +10,9 @@ import com.cmj.app.domain.token.entity.RefreshToken;
 import com.cmj.app.domain.token.exception.ExceptionMessage;
 import com.cmj.app.domain.token.provider.JwtTokenProvider;
 import com.cmj.app.domain.token.service.RefreshTokenService;
+import com.cmj.app.global.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AuthService {
 
     private final MemberService memberService;
@@ -26,7 +28,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public LoginResponse login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest, boolean isRefreshTokenMissing) {
 
         Long accessTokenExpiration = 1000L * 60 * 60; // 1시간
         Long refreshTokenExpiration = 1000L * 60 * 60 * 24 * 7; // 7일
@@ -34,7 +36,7 @@ public class AuthService {
         Member member = authenticate(loginRequest);
         String accessToken = jwtTokenProvider.generateToken(member.getUsername(), accessTokenExpiration);
         String generatedRefreshToken = jwtTokenProvider.generateToken(member.getUsername(), refreshTokenExpiration);
-        RefreshToken refreshToken = refreshTokenService.save(member, generatedRefreshToken, refreshTokenExpiration);
+        RefreshToken refreshToken = refreshTokenService.save(member, generatedRefreshToken, refreshTokenExpiration, isRefreshTokenMissing);
 
         return LoginResponse.of(member.getId(), member.getUsername(), member.getEmail(), accessToken, refreshToken.getToken(), accessTokenExpiration, refreshTokenExpiration);
     }
@@ -45,12 +47,34 @@ public class AuthService {
 
     @Transactional
     public void signup(SignUpRequest signUpRequest) {
+        if (memberService.existsByUsername(signUpRequest.username())) {
+            throw new UserAuthException(ExceptionMessage.EXISTS_USERNAME.getMessage());
+        }
+
+        memberService.save(SignUpRequest.toEntity(signUpRequest, passwordEncoder));
     }
 
     @Transactional
     public void refreshToken(String refreshToken) {
     }
 
+    public boolean isAlreadyLoggedIn(HttpServletRequest request) {
+        String accessToken = CookieUtil.getCookie(request, "AccessToken");
+        if (accessToken == null) return false;
+
+        String username = jwtTokenProvider.extractUsername(accessToken);
+        return username != null && jwtTokenProvider.isTokenValid(accessToken, username);
+    }
+
+    public boolean isRefreshTokenMissing(HttpServletRequest request) {
+        String refreshToken = CookieUtil.getCookie(request, "RefreshToken");
+        return refreshToken == null;
+    }
+
+    public void setTokensInCookies(HttpServletResponse response, LoginResponse loginResponse) {
+        CookieUtil.createCookie(response, "AccessToken", loginResponse.accessToken(), loginResponse.accessTokenExpiresIn().intValue());
+        CookieUtil.createCookie(response, "RefreshToken", loginResponse.refreshToken(), loginResponse.refreshTokenExpiresIn().intValue());
+    }
 
     private Member authenticate(LoginRequest loginRequest) {
         Member member = memberService.findByUsername(loginRequest.username());

@@ -10,27 +10,36 @@ class LoginController extends UtilController {
             evt.preventDefault();  // 폼이 바로 제출되지 않도록 방지
 
             try {
+
+                if (!this.loginForm.username.value) {
+                    this.showToastMessage('아이디를 입력해주세요.');
+                    return;
+                }
+
+                if (!this.loginForm.password.value) {
+                    this.showToastMessage('비밀번호를 입력해주세요.');
+                    return;
+                }
+
+
                 const formData = {
                     username: this.loginForm.username.value,
                     password: this.loginForm.password.value
                 };
 
-                // fetch API를 사용하여 JSON 데이터를 POST로 전송
                 const response = await fetch("/api/auth/login", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",  // JSON으로 전송
+                        "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(formData)  // 객체를 JSON 문자열로 변환
+                    body: JSON.stringify(formData)
                 });
 
-                const responseValue = await response.json();
-
-                if (!response.ok) {
-                    this.showToastMessage(responseValue.message || '로그인에 실패하였습니다.');
+                if (response.status === 200) {
+                    this.showToastMessage('로그인에 성공했습니다.');
                 } else {
-                    this.setLocalStorage("Authorization", responseValue.grantType + responseValue.accessToken);
-                    window.location = document.referrer;  // 이전 페이지로 이동
+                    const errorMessage = await response.text();
+                    this.showToastMessage(errorMessage);
                 }
 
             } catch (error) {

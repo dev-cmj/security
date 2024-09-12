@@ -37,6 +37,13 @@ public class JwtTokenProvider {
         return getClaims(token).getExpiration().before(new Date());
     }
 
+    public boolean isTokenCloseToExpiration(String token) {
+        Date expiration = getClaims(token).getExpiration();
+        Date now = new Date();
+        long diff = expiration.getTime() - now.getTime();
+        return diff < 1000 * 60 * 5; // 5 minutes
+    }
+
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

@@ -3,14 +3,16 @@ package com.cmj.app.global.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CookieUtil {
-    public static void createCookie(HttpServletRequest request, HttpServletResponse response, String name, String value, int maxAge) {
+    public static void createCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setMaxAge(maxAge);
-        cookie.setPath(request.getContextPath());
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 
@@ -26,12 +28,12 @@ public class CookieUtil {
         return null;
     }
 
-    public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+    public static void deleteCookie(HttpServletResponse response, String name) {
         Cookie cookie = new Cookie(name, null);
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        cookie.setPath(request.getContextPath());
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 }

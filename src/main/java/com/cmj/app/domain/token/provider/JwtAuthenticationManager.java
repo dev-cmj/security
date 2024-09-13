@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationManager {

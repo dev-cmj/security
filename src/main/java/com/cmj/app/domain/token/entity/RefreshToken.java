@@ -23,13 +23,14 @@ public class RefreshToken {
     @Column(nullable = false)
     private Instant expiration;
 
+    private String deviceId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public RefreshToken updateToken(String token) {
+    public void updateToken(String token, Long expiration) {
         this.token = token;
-        this.expiration = Instant.now().plusMillis(1000L * 60 * 60 * 24 * 7);
-        return this;
+        this.expiration = Instant.now().plusMillis(expiration);
     }
 }

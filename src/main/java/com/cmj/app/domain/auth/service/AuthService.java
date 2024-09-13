@@ -14,9 +14,13 @@ import com.cmj.app.global.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +32,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public LoginResponse login(LoginRequest loginRequest, boolean isRefreshTokenMissing) {
+    public LoginResponse login(LoginRequest loginRequest, String deviceId) {
 
         Long accessTokenExpiration = 1000L * 60 * 60; // 1시간
         Long refreshTokenExpiration = 1000L * 60 * 60 * 24 * 7; // 7일
@@ -36,13 +40,14 @@ public class AuthService {
         Member member = authenticate(loginRequest);
         String accessToken = jwtTokenProvider.generateToken(member.getUsername(), accessTokenExpiration);
         String generatedRefreshToken = jwtTokenProvider.generateToken(member.getUsername(), refreshTokenExpiration);
-        RefreshToken refreshToken = refreshTokenService.save(member, generatedRefreshToken, refreshTokenExpiration, isRefreshTokenMissing);
+        RefreshToken refreshToken = refreshTokenService.saveOrUpdate(member, generatedRefreshToken, refreshTokenExpiration, deviceId);
 
         return LoginResponse.of(member.getId(), member.getUsername(), member.getEmail(), accessToken, refreshToken.getToken(), accessTokenExpiration, refreshTokenExpiration);
     }
 
     @Transactional
-    public void logout(String token) {
+    public void logout(String token, String deviceId) {
+        refreshTokenService.deleteByTokenAndDeviceId(token, deviceId);
     }
 
     @Transactional
@@ -56,6 +61,7 @@ public class AuthService {
 
     @Transactional
     public void refreshToken(String refreshToken) {
+
     }
 
     public boolean isAlreadyLoggedIn(HttpServletRequest request) {
@@ -66,14 +72,23 @@ public class AuthService {
         return username != null && jwtTokenProvider.isTokenValid(accessToken, username);
     }
 
-    public boolean isRefreshTokenMissing(HttpServletRequest request) {
-        String refreshToken = CookieUtil.getCookie(request, "RefreshToken");
-        return refreshToken == null;
+    public String getOrCreateDeviceId(HttpServletRequest request, HttpServletResponse response) {
+        String deviceId = CookieUtil.getCookie(request, "DeviceId");
+        if (deviceId == null) {
+            deviceId = UUID.randomUUID().toString();
+            CookieUtil.createCookie(response, "DeviceId", deviceId, 60 * 60 * 24 * 365); // 1년 저장
+        }
+        return deviceId;
     }
 
     public void setTokensInCookies(HttpServletResponse response, LoginResponse loginResponse) {
         CookieUtil.createCookie(response, "AccessToken", loginResponse.accessToken(), loginResponse.accessTokenExpiresIn().intValue());
         CookieUtil.createCookie(response, "RefreshToken", loginResponse.refreshToken(), loginResponse.refreshTokenExpiresIn().intValue());
+    }
+
+    public void removeTokensInCookies(HttpServletResponse response) {
+        CookieUtil.deleteCookie(response, "AccessToken");
+        CookieUtil.deleteCookie(response, "RefreshToken");
     }
 
     private Member authenticate(LoginRequest loginRequest) {

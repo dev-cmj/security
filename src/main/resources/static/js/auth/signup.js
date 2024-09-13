@@ -37,8 +37,35 @@ class SignupController extends UtilController {
                 this.showToastMessage('회원가입에 실패하였습니다.');
             }
         });
+
+        //로그인 상태 확인
+        this.checkLoginStatus().then(r => console.log(r));
+    }
+
+    //로그인 상태 확인
+    async checkLoginStatus() {
+        try {
+            const response = await fetch("/api/auth/status", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                if (responseData) {
+                    alert('이미 로그인 되어 있습니다.');
+                    window.location.href = "/";
+                }
+            }
+        } catch (error) {
+            console.log('로그인 상태 확인 실패');
+        }
     }
 }
+
+
 
 // Execute all functions
 document.addEventListener("DOMContentLoaded", () => {

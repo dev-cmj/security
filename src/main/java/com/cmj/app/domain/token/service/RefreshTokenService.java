@@ -20,27 +20,40 @@ public class RefreshTokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    public RefreshToken save(Member member, String token, Long expirationTimeInMillis, boolean isRefreshTokenMissing) {
+    public RefreshToken saveOrUpdate(Member member, String newToken, Long expirationTimeInMillis, String deviceId) {
 
-        Optional<RefreshToken> existingToken = refreshTokenRepository.findByMember(member);
+        // 특정 멤버와 디바이스 ID에 해당하는 RefreshToken 조회
+        Optional<RefreshToken> existingToken = refreshTokenRepository.findByMemberAndDeviceId(member, deviceId);
 
         if (existingToken.isPresent()) {
-            RefreshToken checkToken = existingToken.get();
-            String checkTokenString = checkToken.getToken();
+            RefreshToken refreshToken = existingToken.get();
 
-            if (jwtTokenProvider.isTokenExpired(checkTokenString) || jwtTokenProvider.isTokenCloseToExpiration(checkTokenString) || isRefreshTokenMissing) {
-                log.info("RefreshToken is expired. Token: {}", checkTokenString);
-                return checkToken.updateToken(token);
-            } else {
-                log.info("RefreshToken is not expired. Token: {}", checkTokenString);
-                return checkToken;
+            // 토큰이 만료되었거나, 만료시간이 임박한 경우 갱신
+            if (jwtTokenProvider.isTokenExpired(refreshToken.getToken()) || jwtTokenProvider.isTokenCloseToExpiration(refreshToken.getToken())) {
+                refreshToken.updateToken(newToken, expirationTimeInMillis);
+                log.info("RefreshToken is updated for deviceId: {}", deviceId);
             }
+
+            // 만료되지 않은 경우 기존 토큰 반환
+            return refreshToken;
+
         } else {
+            // 새로 생성된 토큰 저장
             Instant expiration = Instant.now().plusMillis(expirationTimeInMillis);
-            RefreshToken refreshToken = RefreshToken.builder().token(token).expiration(expiration).member(member).build();
-            log.info("RefreshToken is created. Token: {}", token);
-            return refreshTokenRepository.save(refreshToken);
+            RefreshToken newRefreshToken = RefreshToken.builder()
+                    .token(newToken)
+                    .expiration(expiration)
+                    .member(member)
+                    .deviceId(deviceId)  // 각 디바이스별로 관리
+                    .build();
+
+            log.info("New RefreshToken is created for deviceId: {}", deviceId);
+            return refreshTokenRepository.save(newRefreshToken);
         }
+    }
+
+    public void deleteByTokenAndDeviceId(String token, String deviceId) {
+        refreshTokenRepository.deleteByTokenAndDeviceId(token, deviceId);
     }
 
 

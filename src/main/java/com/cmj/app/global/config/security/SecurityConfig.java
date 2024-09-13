@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         (request) ->
                                 request.requestMatchers(AntPathRequestMatcher.antMatcher("/api/auth/**")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/css/**")).permitAll()

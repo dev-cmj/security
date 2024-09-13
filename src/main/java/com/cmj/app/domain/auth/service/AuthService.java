@@ -15,14 +15,10 @@ import com.cmj.app.global.util.DeviceIdUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +72,7 @@ public class AuthService {
 
     public String getOrCreateDeviceId(HttpServletRequest request, HttpServletResponse response) {
         String deviceId = CookieUtil.getCookie(request, "DeviceId");
-        if (StringUtils.isEmpty(deviceId)) {
+        if (StringUtils.isEmpty(deviceId) || !DeviceIdUtil.isValidDeviceId(deviceId)) {
             deviceId = DeviceIdUtil.generateDeviceId();
             CookieUtil.createCookie(response, "DeviceId", deviceId, 60 * 60 * 24 * 365); // 1년 저장
         }

@@ -9,6 +9,17 @@ class SignupController extends UtilController {
         this.signupFormButton.addEventListener("click", async (evt) => {
             evt.preventDefault();  // 기본 폼 제출 동작 방지
 
+            if (!this.signupForm.username.value) {
+                this.showToastMessage('아이디를 입력해주세요.');
+                return;
+            }
+
+            if (!this.signupForm.password.value) {
+                this.showToastMessage('비밀번호를 입력해주세요.');
+                return;
+            }
+
+
             const formData = {
                 username: this.signupForm.username.value,
                 password: this.signupForm.password.value,
@@ -29,9 +40,7 @@ class SignupController extends UtilController {
                     this.showToastMessage(responseData.message);
                 } else {
                     this.showToastMessage("회원가입에 성공했습니다.");
-                    setTimeout(() => {
-                        window.location.href = "/auth/login";
-                    }, 1000);
+                    window.location.href = "/auth/login";
                 }
             } catch (error) {
                 this.showToastMessage('회원가입에 실패하였습니다.');
@@ -64,7 +73,6 @@ class SignupController extends UtilController {
         }
     }
 }
-
 
 
 // Execute all functions

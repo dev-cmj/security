@@ -7,6 +7,7 @@ import com.cmj.app.domain.token.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -20,10 +21,11 @@ public class RefreshTokenService {
     private final JwtTokenProvider jwtTokenProvider;
 
 
+    @Transactional
     public RefreshToken saveOrUpdate(Member member, String newToken, Long expirationTimeInMillis, String deviceId) {
 
         // 특정 멤버와 디바이스 ID에 해당하는 RefreshToken 조회
-        Optional<RefreshToken> existingToken = refreshTokenRepository.findByMemberAndDeviceId(member, deviceId);
+        Optional<RefreshToken> existingToken = findByMemberAndDeviceId(member, deviceId);
 
         if (existingToken.isPresent()) {
             RefreshToken refreshToken = existingToken.get();
@@ -52,8 +54,19 @@ public class RefreshTokenService {
         }
     }
 
+    @Transactional
     public void deleteByTokenAndDeviceId(String token, String deviceId) {
         refreshTokenRepository.deleteByTokenAndDeviceId(token, deviceId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<RefreshToken> findByMemberAndDeviceId(Member member, String deviceId) {
+        return refreshTokenRepository.findByMemberAndDeviceId(member, deviceId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<RefreshToken> findByTokenAndDeviceId(String token, String deviceId) {
+        return refreshTokenRepository.findByTokenAndDeviceId(token, deviceId);
     }
 
 

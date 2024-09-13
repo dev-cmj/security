@@ -37,6 +37,7 @@ class LoginController extends UtilController {
 
                 if (response.status === 200) {
                     this.showToastMessage('로그인에 성공했습니다.');
+                    window.location.href = "/";
                 } else {
                     const errorMessage = await response.text();
                     this.showToastMessage(errorMessage);

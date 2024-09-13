@@ -1,12 +1,14 @@
 package com.cmj.app.global.config.jwt;
 
 import com.cmj.app.domain.token.provider.JwtTokenProvider;
+import com.cmj.app.domain.token.service.RefreshTokenService;
 import com.cmj.app.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,54 +20,115 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.cmj.app.global.util.DeviceIdUtil.isValidDeviceId;
+
 @Component
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
-    private final JwtTokenProvider JwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
-    public JwtAuthenticationFilter(@Qualifier("memberService") UserDetailsService userDetailsService, JwtTokenProvider JwtTokenProvider) {
+    public JwtAuthenticationFilter(@Qualifier("memberService") UserDetailsService userDetailsService,
+                                   JwtTokenProvider jwtTokenProvider,
+                                   RefreshTokenService refreshTokenService) {
         this.userDetailsService = userDetailsService;
-        this.JwtTokenProvider = JwtTokenProvider;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-
         return path.startsWith("/css/") || path.startsWith("/js/") || path.startsWith("/images/") || path.startsWith("/favicon.ico");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("Processing request: {}", request.getRequestURI());
 
-        // 나머지 로직...
-        // Authorization 헤더 대신 쿠키에서 JWT 추출
-        String jwt = CookieUtil.getCookie(request, "AccessToken"); // "JWT-TOKEN" 쿠키 이름으로 JWT 가져오기
-        String username = null;
+        String accessToken = CookieUtil.getCookie(request, "AccessToken");
+        String refreshToken = CookieUtil.getCookie(request, "RefreshToken");
+        String deviceId = CookieUtil.getCookie(request, "DeviceId");
 
-        if (jwt != null) {
-            username = JwtTokenProvider.extractUsername(jwt); // JWT로부터 사용자 이름 추출
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            try {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
-                if (JwtTokenProvider.isTokenValid(jwt, userDetails.getUsername())) {
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                }
-            } catch (Exception e) {
-                log.error("JWT 토큰 유효성 검사 실패");
-                CookieUtil.deleteCookie(response, "AccessToken");
-                CookieUtil.deleteCookie(response, "RefreshToken");
-            }
+        if (StringUtils.isNotEmpty(accessToken)) {
+            handleAccessToken(accessToken, request, response, refreshToken, deviceId);
         }
 
         filterChain.doFilter(request, response);
     }
+
+    private void handleAccessToken(String accessToken, HttpServletRequest request, HttpServletResponse response, String refreshToken, String deviceId) {
+        try {
+
+            boolean isAccessTokenExpired = jwtTokenProvider.isTokenExpired(accessToken);
+            String username = jwtTokenProvider.extractUsername(accessToken);
+
+            if (isAccessTokenExpired) {
+                log.info("AccessToken expired. Attempting to refresh.");
+                handleRefreshToken(refreshToken, deviceId, request, response);
+            } else if (StringUtils.isNotEmpty(username)) {
+                authenticateUser(username, accessToken, request);
+            }
+        } catch (Exception e) {
+            log.error("Error verifying JWT token", e);
+            deleteCookies(response);
+        }
+    }
+
+    private void handleRefreshToken(String refreshToken, String deviceId, HttpServletRequest request, HttpServletResponse response) {
+        // deviceId 유효성 검사 추가
+        if (StringUtils.isEmpty(refreshToken) || StringUtils.isEmpty(deviceId)) {
+            log.warn("RefreshToken or DeviceId is missing or invalid.");
+            deleteCookies(response);
+            return;
+        }
+
+        if (!isValidDeviceId(deviceId)) {
+            log.warn("Invalid DeviceId detected. Potential tampering attempt.");
+            deleteCookies(response);
+            return;
+        }
+
+        String refreshUsername = jwtTokenProvider.extractUsername(refreshToken);
+        if (StringUtils.isEmpty(refreshUsername) || !jwtTokenProvider.isTokenValid(refreshToken, refreshUsername)) {
+            log.warn("Invalid RefreshToken.");
+            deleteCookies(response);
+            return;
+        }
+
+        refreshTokenService.findByTokenAndDeviceId(refreshToken, deviceId).ifPresentOrElse(
+                token -> {
+                    String newAccessToken = jwtTokenProvider.generateToken(refreshUsername, 7 * 24 * 60 * 60L);
+                    CookieUtil.createCookie(response, "AccessToken", newAccessToken, 7 * 24 * 60 * 60);
+                    authenticateUser(refreshUsername, newAccessToken, request);
+                },
+                () -> {
+                    log.warn("RefreshToken not found in DB.");
+                    deleteCookies(response);
+                }
+        );
+    }
+
+    private void authenticateUser(String username, String token, HttpServletRequest request) {
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+        if (jwtTokenProvider.isTokenValid(token, userDetails.getUsername())) {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
+    }
+
+    private void deleteCookies(HttpServletResponse response) {
+        CookieUtil.deleteCookie(response, "AccessToken");
+        CookieUtil.deleteCookie(response, "RefreshToken");
+    }
+
 }

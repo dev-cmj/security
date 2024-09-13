@@ -10,16 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CommonController {
 
     @RequestMapping("/")
-    public String index(
-            Authentication authentication
-    ) {
-        log.info("authentication: {}", authentication);
-
-        if (authentication == null) {
-            return "redirect:/auth/login";
-        }
-
-        return "redirect:/home";
+    public String index(Authentication authentication) {
+        return "main/index";
     }
-
 }

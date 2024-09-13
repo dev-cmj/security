@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Index Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- Header -->
+<header class="bg-green-500 text-white p-4 text-center">
+    <h1 class="text-3xl font-bold">Welcome to Our Application</h1>
+    <nav class="mt-4">
+        <ul class="flex justify-center space-x-6">
+            <!-- 로그인하지 않은 경우 Login, Register 링크 표시 -->
+            <li th:if="${not #authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/auth/login}" class="hover:underline">Login</a>
+            </li>
+            <li th:if="${not #authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/auth/signup}" class="hover:underline">Register</a>
+            </li>
+            <!-- 로그인한 경우 About Us, Contact, Logout 링크 표시 -->
+            <li th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/auth/about}" class="hover:underline">About Us</a>
+            </li>
+            <li th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/auth/contact}" class="hover:underline">Contact</a>
+            </li>
+            <li th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/auth/logout}" class="hover:underline">Logout</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Main Content -->
+<main class="container mx-auto mt-10 p-4">
+    <section class="mb-10">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">What's New</h2>
+        <p class="text-gray-600 mb-4">Stay updated with the latest news and features of our app.</p>
+        <ul class="list-disc pl-6">
+            <li class="mb-2">Feature 1: Explanation of feature 1</li>
+            <li class="mb-2">Feature 2: Explanation of feature 2</li>
+            <li class="mb-2">Feature 3: Explanation of feature 3</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Join Us Today!</h2>
+        <p class="text-gray-600 mb-4">Sign up now to enjoy the full benefits of our services.</p>
+        <a th:href="@{/register}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Register Now</a>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white text-center p-4 mt-10">
+    <p>&copy; 2024 MyApp. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

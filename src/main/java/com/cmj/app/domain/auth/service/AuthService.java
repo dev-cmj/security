@@ -11,6 +11,7 @@ import com.cmj.app.domain.token.exception.ExceptionMessage;
 import com.cmj.app.domain.token.provider.JwtTokenProvider;
 import com.cmj.app.domain.token.service.RefreshTokenService;
 import com.cmj.app.global.util.CookieUtil;
+import com.cmj.app.global.util.DeviceIdUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.UUID;
 
@@ -74,8 +76,8 @@ public class AuthService {
 
     public String getOrCreateDeviceId(HttpServletRequest request, HttpServletResponse response) {
         String deviceId = CookieUtil.getCookie(request, "DeviceId");
-        if (deviceId == null) {
-            deviceId = UUID.randomUUID().toString();
+        if (StringUtils.isEmpty(deviceId)) {
+            deviceId = DeviceIdUtil.generateDeviceId();
             CookieUtil.createCookie(response, "DeviceId", deviceId, 60 * 60 * 24 * 365); // 1년 저장
         }
         return deviceId;

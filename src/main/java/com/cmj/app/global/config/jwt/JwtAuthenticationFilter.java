@@ -49,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("Processing request: {}", request.getRequestURI());
 
         String accessToken = CookieUtil.getCookie(request, "AccessToken");
-        String refreshToken = CookieUtil.getCookie(request, "RefreshToken");
         String deviceId = CookieUtil.getCookie(request, "DeviceId");
 
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -58,13 +57,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (StringUtils.isNotEmpty(accessToken)) {
-            handleAccessToken(accessToken, request, response, refreshToken, deviceId);
+            handleAccessToken(accessToken, request, response, deviceId);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void handleAccessToken(String accessToken, HttpServletRequest request, HttpServletResponse response, String refreshToken, String deviceId) {
+    private void handleAccessToken(String accessToken, HttpServletRequest request, HttpServletResponse response, String deviceId) {
         try {
 
             boolean isAccessTokenExpired = jwtTokenProvider.isTokenExpired(accessToken);
@@ -72,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (isAccessTokenExpired) {
                 log.info("AccessToken expired. Attempting to refresh.");
-                handleRefreshToken(refreshToken, deviceId, request, response);
+                handleRefreshToken(deviceId, username, request, response);
             } else if (StringUtils.isNotEmpty(username)) {
                 authenticateUser(username, accessToken, request);
             }
@@ -82,10 +81,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private void handleRefreshToken(String refreshToken, String deviceId, HttpServletRequest request, HttpServletResponse response) {
+    private void handleRefreshToken(String deviceId, String username, HttpServletRequest request, HttpServletResponse response) {
         // deviceId 유효성 검사 추가
-        if (StringUtils.isEmpty(refreshToken) || StringUtils.isEmpty(deviceId)) {
-            log.warn("RefreshToken or DeviceId is missing or invalid.");
+        if (StringUtils.isEmpty(deviceId)) {
+            log.warn("DeviceId is missing or invalid.");
             deleteCookies(response);
             return;
         }
@@ -96,18 +95,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String refreshUsername = jwtTokenProvider.extractUsername(refreshToken);
-        if (StringUtils.isEmpty(refreshUsername) || !jwtTokenProvider.isTokenValid(refreshToken, refreshUsername)) {
-            log.warn("Invalid RefreshToken.");
-            deleteCookies(response);
-            return;
-        }
-
-        refreshTokenService.findByTokenAndDeviceId(refreshToken, deviceId).ifPresentOrElse(
+        refreshTokenService.findByUsernameAndDeviceId(username, deviceId).ifPresentOrElse(
                 token -> {
-                    String newAccessToken = jwtTokenProvider.generateToken(refreshUsername, 7 * 24 * 60 * 60L);
+                    String newAccessToken = jwtTokenProvider.generateToken(username, 7 * 24 * 60 * 60L);
                     CookieUtil.createCookie(response, "AccessToken", newAccessToken, 7 * 24 * 60 * 60);
-                    authenticateUser(refreshUsername, newAccessToken, request);
+                    authenticateUser(username, newAccessToken, request);
                 },
                 () -> {
                     log.warn("RefreshToken not found in DB.");
@@ -128,7 +120,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void deleteCookies(HttpServletResponse response) {
         CookieUtil.deleteCookie(response, "AccessToken");
-        CookieUtil.deleteCookie(response, "RefreshToken");
     }
 
 }

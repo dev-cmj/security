@@ -44,8 +44,8 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(String token, String deviceId) {
-        refreshTokenService.deleteByTokenAndDeviceId(token, deviceId);
+    public void logout(String username, String deviceId) {
+        refreshTokenService.deleteByUsernameAndDeviceId(username, deviceId);
     }
 
     @Transactional
@@ -81,12 +81,10 @@ public class AuthService {
 
     public void setTokensInCookies(HttpServletResponse response, LoginResponse loginResponse) {
         CookieUtil.createCookie(response, "AccessToken", loginResponse.accessToken(), loginResponse.accessTokenExpiresIn().intValue());
-        CookieUtil.createCookie(response, "RefreshToken", loginResponse.refreshToken(), loginResponse.refreshTokenExpiresIn().intValue());
     }
 
     public void removeTokensInCookies(HttpServletResponse response) {
         CookieUtil.deleteCookie(response, "AccessToken");
-        CookieUtil.deleteCookie(response, "RefreshToken");
     }
 
     private Member authenticate(LoginRequest loginRequest) {

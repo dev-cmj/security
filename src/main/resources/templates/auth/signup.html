@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
-    <th:block th:replace="/common/config :: config"></th:block>
-    <script type="text/javascript" th:src="@{/js/auth/signup.js}"></script>
+    <th:block th:replace="~{/common/config :: config}"></th:block>
+    <script th:src="@{/js/auth/signup.js}"></script>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">

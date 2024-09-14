@@ -55,13 +55,23 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public void deleteByTokenAndDeviceId(String token, String deviceId) {
-        refreshTokenRepository.deleteByTokenAndDeviceId(token, deviceId);
+    public void deleteByUsernameAndDeviceId(String username, String deviceId) {
+        refreshTokenRepository.deleteByUsernameAndDeviceId(username, deviceId);
     }
 
     @Transactional(readOnly = true)
     public Optional<RefreshToken> findByMemberAndDeviceId(Member member, String deviceId) {
         return refreshTokenRepository.findByMemberAndDeviceId(member, deviceId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<RefreshToken> findByUsernameAndDeviceId(String username, String deviceId) {
+        return refreshTokenRepository.findByUsernameAndDeviceId(username, deviceId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
     }
 
     @Transactional(readOnly = true)

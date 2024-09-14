@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,10 +38,10 @@ public class AuthRestController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@CookieValue("RefreshToken") String token,
-                                    @CookieValue("DeviceId") String deviceId,
+    public ResponseEntity<?> logout(@CookieValue("DeviceId") String deviceId,
+                                    Authentication authentication,
                                     HttpServletResponse response) {
-        authService.logout(token, deviceId);
+        authService.logout(authentication.getName(), deviceId);
         authService.removeTokensInCookies(response);
         return ResponseEntity.ok().build();
     }
@@ -53,13 +54,6 @@ public class AuthRestController {
 
         authService.signup(signUpRequest);
 
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@CookieValue("RefreshToken") String refreshToken) {
-        // 리프레시 토큰을 통한 액세스 토큰 재발급
-        authService.refreshToken(refreshToken);
         return ResponseEntity.ok().build();
     }
 

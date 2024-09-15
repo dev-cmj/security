@@ -82,7 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void handleRefreshToken(String deviceId, String username, HttpServletRequest request, HttpServletResponse response) {
-        // deviceId 유효성 검사 추가
+
         if (StringUtils.isEmpty(deviceId)) {
             log.warn("DeviceId is missing or invalid.");
             deleteCookies(response);
@@ -97,8 +97,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         refreshTokenService.findByUsernameAndDeviceId(username, deviceId).ifPresentOrElse(
                 token -> {
-                    String newAccessToken = jwtTokenProvider.generateToken(username, 7 * 24 * 60 * 60L);
-                    CookieUtil.createCookie(response, "AccessToken", newAccessToken, 7 * 24 * 60 * 60);
+                    //accessToken의 갱신 시간은 10분으로 설정
+                    String newAccessToken = jwtTokenProvider.generateToken(username, 10 * 60 * 1000L);
+
+                    CookieUtil.createCookie(response, "AccessToken", newAccessToken, 10 * 60 * 1000L);
                     authenticateUser(username, newAccessToken, request);
                 },
                 () -> {

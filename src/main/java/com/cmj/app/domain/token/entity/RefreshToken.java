@@ -23,6 +23,7 @@ public class RefreshToken {
     @Column(nullable = false)
     private Instant expiration;
 
+    @Column(nullable = false, unique = true)
     private String deviceId;
 
     @ManyToOne(fetch = FetchType.LAZY)

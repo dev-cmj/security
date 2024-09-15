@@ -7,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CookieUtil {
-    public static void createCookie(HttpServletResponse response, String name, String value, int maxAge) {
+    public static void createCookie(HttpServletResponse response, String name, String value, Long expirationTimeMillis) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        cookie.setMaxAge(maxAge);
+        cookie.setMaxAge((int) (expirationTimeMillis / 1000));  // 밀리초를 초로 변환
         cookie.setPath("/");
         response.addCookie(cookie);
     }

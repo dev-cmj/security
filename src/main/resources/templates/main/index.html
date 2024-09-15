@@ -7,6 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const isAuthenticated = [[${#authorization.expression('isAuthenticated()')}]];
+
+    if(isAuthenticated) {
+        //logout button click event
+        document.querySelector('button[name="logout"]').addEventListener('click', function() {
+            fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if(response.ok) {
+                    window.location.href = '/';
+                }
+            });
+        });
+    }
+    /*]]>*/
+</script>
+
 <body class="bg-gray-100">
 
 <!-- Header -->
@@ -21,15 +43,8 @@
             <li th:if="${not #authorization.expression('isAuthenticated()')}">
                 <a th:href="@{/auth/signup}" class="hover:underline">Register</a>
             </li>
-            <!-- 로그인한 경우 About Us, Contact, Logout 링크 표시 -->
             <li th:if="${#authorization.expression('isAuthenticated()')}">
-                <a th:href="@{/auth/about}" class="hover:underline">About Us</a>
-            </li>
-            <li th:if="${#authorization.expression('isAuthenticated()')}">
-                <a th:href="@{/auth/contact}" class="hover:underline">Contact</a>
-            </li>
-            <li th:if="${#authorization.expression('isAuthenticated()')}">
-                <a th:href="@{/auth/logout}" class="hover:underline">Logout</a>
+                <button class="hover:underline" name="logout">Logout</button>
             </li>
         </ul>
     </nav>

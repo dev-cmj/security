@@ -32,7 +32,9 @@ public class AuthService {
     @Transactional
     public LoginResponse login(LoginRequest loginRequest, String deviceId) {
 
-        Long accessTokenExpiration = 1000L * 60 * 60; // 1시간
+        //10분
+        Long accessTokenExpiration = 1000L * 60 * 10; // 10분
+
         Long refreshTokenExpiration = 1000L * 60 * 60 * 24 * 7; // 7일
 
         Member member = authenticate(loginRequest);
@@ -74,13 +76,13 @@ public class AuthService {
         String deviceId = CookieUtil.getCookie(request, "DeviceId");
         if (StringUtils.isEmpty(deviceId) || !DeviceIdUtil.isValidDeviceId(deviceId)) {
             deviceId = DeviceIdUtil.generateDeviceId();
-            CookieUtil.createCookie(response, "DeviceId", deviceId, 60 * 60 * 24 * 365); // 1년 저장
+            CookieUtil.createCookie(response, "DeviceId", deviceId, 60 * 60 * 24 * 365L); // 1년 저장
         }
         return deviceId;
     }
 
     public void setTokensInCookies(HttpServletResponse response, LoginResponse loginResponse) {
-        CookieUtil.createCookie(response, "AccessToken", loginResponse.accessToken(), loginResponse.accessTokenExpiresIn().intValue());
+        CookieUtil.createCookie(response, "AccessToken", loginResponse.accessToken(), loginResponse.accessTokenExpiresIn());
     }
 
     public void removeTokensInCookies(HttpServletResponse response) {

@@ -28,7 +28,7 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 로그인된 사용자입니다.");
         }
 
-        String deviceId = authService.getOrCreateDeviceId(request, response); // 디바이스 ID 생성 또는 조회
+        String deviceId = authService.getOrCreateDeviceId(request, response);
         LoginResponse loginResponse = authService.login(loginRequest, deviceId);
 
         // 쿠키에 액세스 토큰과 리프레시 토큰 저장

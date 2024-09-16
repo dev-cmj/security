@@ -3,6 +3,7 @@ package com.cmj.app.domain.auth.controller;
 import com.cmj.app.domain.auth.dto.LoginRequest;
 import com.cmj.app.domain.auth.dto.LoginResponse;
 import com.cmj.app.domain.auth.dto.SignUpRequest;
+import com.cmj.app.domain.auth.dto.SignUpResponse;
 import com.cmj.app.domain.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,9 +53,8 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("로그아웃 후 회원가입을 시도해주세요.");
         }
 
-        authService.signup(signUpRequest);
-
-        return ResponseEntity.ok().build();
+        SignUpResponse signUpResponse = authService.signup(signUpRequest);
+        return ResponseEntity.ok(signUpResponse);
     }
 
     @GetMapping("/status")

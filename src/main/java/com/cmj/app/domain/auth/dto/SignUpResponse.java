@@ -8,17 +8,15 @@ public record SignUpResponse(
         Long memberId,
         String username,
         String email,
-        MemberRole role,
-        String accessToken
+        MemberRole role
 ) {
 
-    public static SignUpResponse of(Long memberId, String username, String email, MemberRole role, String accessToken) {
+    public static SignUpResponse of(Long memberId, String username, String email, MemberRole role) {
         return SignUpResponse.builder()
                 .memberId(memberId)
                 .username(username)
                 .email(email)
                 .role(role)
-                .accessToken(accessToken)
                 .build();
     }
 

@@ -3,6 +3,7 @@ package com.cmj.app.domain.member.service;
 import com.cmj.app.domain.member.entity.Member;
 import com.cmj.app.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +21,7 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Cacheable(value = "member", key = "#username")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member foundMember = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
@@ -46,8 +48,8 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void save(Member member) {
-        memberRepository.save(member);
+    public Member save(Member member) {
+       return memberRepository.save(member);
     }
 
     @Transactional

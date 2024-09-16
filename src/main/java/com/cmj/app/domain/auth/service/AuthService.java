@@ -3,6 +3,7 @@ package com.cmj.app.domain.auth.service;
 import com.cmj.app.domain.auth.dto.LoginRequest;
 import com.cmj.app.domain.auth.dto.LoginResponse;
 import com.cmj.app.domain.auth.dto.SignUpRequest;
+import com.cmj.app.domain.auth.dto.SignUpResponse;
 import com.cmj.app.domain.auth.exception.UserAuthException;
 import com.cmj.app.domain.member.entity.Member;
 import com.cmj.app.domain.member.service.MemberService;
@@ -51,12 +52,13 @@ public class AuthService {
     }
 
     @Transactional
-    public void signup(SignUpRequest signUpRequest) {
+    public SignUpResponse signup(SignUpRequest signUpRequest) {
         if (memberService.existsByUsername(signUpRequest.username())) {
             throw new UserAuthException(ExceptionMessage.EXISTS_USERNAME.getMessage());
         }
 
-        memberService.save(SignUpRequest.toEntity(signUpRequest, passwordEncoder));
+        Member member = memberService.save(SignUpRequest.toEntity(signUpRequest, passwordEncoder));
+        return SignUpResponse.of(member.getId(), member.getUsername(), member.getEmail(), member.getRole());
     }
 
     @Transactional

@@ -33,6 +33,7 @@ public class Member {
     private MemberRole role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     public void addRefreshToken(RefreshToken refreshToken) {

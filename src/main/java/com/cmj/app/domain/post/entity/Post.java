@@ -2,11 +2,13 @@ package com.cmj.app.domain.post.entity;
 
 import com.cmj.app.domain.board.entity.Board;
 import com.cmj.app.domain.comment.entity.Comment;
+import com.cmj.app.domain.like.entity.Like;
 import com.cmj.app.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,18 +23,27 @@ public class Post {
 
     private String title;
     private String content;
-    private LocalDateTime createdAt;
 
-    @ManyToOne
+    private int viewCount;  // 조회수
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memeber_id")
     private Member member;  // 작성자
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;  // 해당 게시글이 속한 게시판
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> comments;  // 게시글에 달린 댓글 목록
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();  // 게시글에 달린 댓글 목록
 
-    // Getter, Setter
+    @OneToMany(mappedBy = "post")
+    @Builder.Default
+    private List<Like> likes = new ArrayList<>();  // 게시글에 달린 좋아요 목록
+
+    public void update(Post post) {
+        this.title = post.title;
+        this.content = post.content;
+    }
 }

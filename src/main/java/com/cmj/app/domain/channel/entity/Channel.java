@@ -1,6 +1,7 @@
 package com.cmj.app.domain.channel.entity;
 
 import com.cmj.app.domain.board.entity.Board;
+import com.cmj.app.domain.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,10 @@ public class Channel {
 
     private String name;  // 채널 이름
     private String description;  // 채널 설명
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;  // 채널이 속한 카테고리
 
     @OneToMany(mappedBy = "channel")
     private List<Board> boards;  // 채널에 속한 게시판 목록

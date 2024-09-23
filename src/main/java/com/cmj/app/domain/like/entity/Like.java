@@ -1,7 +1,7 @@
-package com.cmj.app.domain.comment.entity;
+package com.cmj.app.domain.like.entity;
 
-import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.member.entity.Member;
+import com.cmj.app.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,21 +12,21 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Comment {
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"member_id", "post_id"})
+        }
+)
+public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String content;
-    private LocalDateTime createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;  // 댓글 작성자
+    private Member member;  // 좋아요를 누른 사용자
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;  // 해당 댓글이 달린 게시글
-
-    // Getter, Setter
+    private Post post;  // 해당 게시글
 }

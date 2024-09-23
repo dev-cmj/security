@@ -20,7 +20,7 @@ public class Board {
     private String name;  // 게시판 이름
     private String description;  // 게시판 설명
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id")
     private Channel channel;  // 게시판이 속한 채널
 

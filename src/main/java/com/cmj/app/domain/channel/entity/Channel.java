@@ -1,4 +1,4 @@
-package com.cmj.app.domain.board.channel.entity;
+package com.cmj.app.domain.channel.entity;
 
 import com.cmj.app.domain.board.entity.Board;
 import jakarta.persistence.*;

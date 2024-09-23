@@ -1,6 +1,6 @@
-package com.cmj.app.domain.board.category.entity;
+package com.cmj.app.domain.category.entity;
 
-import com.cmj.app.domain.board.channel.entity.Channel;
+import com.cmj.app.domain.channel.entity.Channel;
 import jakarta.persistence.*;
 import lombok.*;
 

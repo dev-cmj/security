@@ -1,6 +1,6 @@
-package com.cmj.app.domain.board.post.comment.entity;
+package com.cmj.app.domain.comment.entity;
 
-import com.cmj.app.domain.board.post.entity.Post;
+import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;

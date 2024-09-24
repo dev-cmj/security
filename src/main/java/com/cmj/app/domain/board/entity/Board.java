@@ -28,6 +28,9 @@ public class Board {
     private List<Post> posts;  // 게시판에 속한 게시글 목록
 
     // 게시판마다 별도의 설정을 둘 수 있음
-    private boolean isAnonymous;  // 익명 게시판 여부
-    private boolean isModerated;  // 관리자 승인 여부가 필요한 게시판
+    @Builder.Default
+    private boolean isAnonymous = false;  // 익명 게시판 여부
+
+    @Builder.Default
+    private boolean isModerated = false;  // 심의 게시판 여부
 }

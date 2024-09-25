@@ -45,6 +45,7 @@ public class RedisConfig {
         RedisStandaloneConfiguration conf = new RedisStandaloneConfiguration();
         conf.setHostName(this.host);
         conf.setPort(this.port);
+        conf.setPassword("vmware1!");
         return new LettuceConnectionFactory(conf);
     }
 

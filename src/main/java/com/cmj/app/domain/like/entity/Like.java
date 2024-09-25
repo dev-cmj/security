@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(
+@Table(name = "likes",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"member_id", "post_id"})
         }

@@ -23,11 +23,11 @@ public class Post {
 
     private String title;
     private String content;
-
-    private int viewCount;  // 조회수
+    @Setter
+    private Long viewCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memeber_id")
+    @JoinColumn(name = "member_id")
     private Member member;  // 작성자
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,4 +46,5 @@ public class Post {
         this.title = post.title;
         this.content = post.content;
     }
+
 }

@@ -2,20 +2,26 @@ package com.cmj.app.domain.post.repository;
 
 import com.cmj.app.domain.post.dto.PostSearchCondition;
 import com.cmj.app.domain.post.entity.Post;
+import com.cmj.app.domain.post.entity.PostProjection;
+import com.cmj.app.domain.post.entity.PostSort;
+import com.cmj.app.global.domain.PagingUtils;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.cmj.app.domain.comment.entity.QComment.comment;
 import static com.cmj.app.domain.like.entity.QLike.like;
 import static com.cmj.app.domain.post.entity.QPost.post;
+import static com.cmj.app.global.domain.SortUtils.getSort;
 
 
 @Repository
@@ -35,18 +41,42 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetchOne());
     }
 
-    //Pagination query
     @Override
     public Page<PostProjection> findPostsPage(PostSearchCondition condition) {
 
-        List<PostProjection> content = getPostProjections(condition);
-        Long totalCount = getCount(condition);
-        Pageable pageable = PageRequest.of(condition.page(), condition.size(), Sort.by(Sort.Direction.fromString(condition.order()), condition.sortField()));
+        Pageable pageable = PagingUtils.getPageable(condition.page(), condition.size());
+        OrderSpecifier<?> orderSpec = getSort(condition.sortField(), condition.order(), PostSort.class);
 
-        return new PageImpl<>(content, pageable, totalCount);
+        Long totalCount = getCount(condition);
+
+        JPAQuery<PostProjection> query = getJpaQuery(condition);
+        query = applyPaginationAndSorting(query, pageable, orderSpec);
+
+        List<PostProjection> list = query.fetch();
+        return new PageImpl<>(list, pageable, totalCount);
     }
 
-    private List<PostProjection> getPostProjections(PostSearchCondition condition) {
+    @Override
+    public Slice<PostProjection> findPostsSlice(PostSearchCondition condition) {
+
+        Pageable pageable = PagingUtils.getPageable(condition.page(), condition.size());
+        OrderSpecifier<?> orderSpec = getSort(condition.sortField(), condition.order(), PostSort.class);
+
+        JPAQuery<PostProjection> query = getJpaQuery(condition);
+        query = applyPaginationAndSorting(query, pageable, orderSpec);
+
+        List<PostProjection> result = query.fetch();
+
+        boolean hasNext = false;
+        if (result.size() > pageable.getPageSize()) {
+            result.removeLast();  // +1로 가져온 데이터는 잘라내기
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(result, pageable, hasNext);
+    }
+
+    private JPAQuery<PostProjection> getJpaQuery(PostSearchCondition condition) {
         return queryFactory
                 .select(new QPostProjection(
                         post.id,
@@ -54,58 +84,53 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                         post.content,
                         post.viewCount,
                         post.member.username,
-                        JPAExpressions
-                                .select(comment.count())   // 서브쿼리를 사용해 댓글 수를 가져옴
-                                .from(comment)
-                                .where(comment.post.eq(post)),
-                        JPAExpressions
-                                .select(like.count())      // 서브쿼리를 사용해 좋아요 수를 가져옴
-                                .from(like)
-                                .where(like.post.eq(post))
+                        comment.countDistinct(),
+                        like.countDistinct()
                 ))
                 .from(post)
                 .leftJoin(post.member)
-                .offset((long) condition.page() * condition.size())
-                .limit(condition.size())
-                .where(
-                        containsTitle(condition.title()),
-                        containsContent(condition.content()),
-                        containsAuthor(condition.author()),
-                        containsComment(condition.comment())
-                )
-                .fetch();
+                .leftJoin(post.comments, comment)
+                .leftJoin(post.likes, like)
+                .where(buildWhereCondition(condition))
+                .groupBy(post.id);
     }
 
     private Long getCount(PostSearchCondition condition) {
         return queryFactory
-                .select(post.count())
+                .select(post.id.count())
                 .from(post)
-                .leftJoin(post.member)
-                .where(
-                        containsTitle(condition.title()),
-                        containsContent(condition.content()),
-                        containsAuthor(condition.author()),
-                        containsComment(condition.comment())
-                )
+                .where(buildWhereCondition(condition))
                 .fetchOne();
     }
 
-    private BooleanExpression containsTitle(String title) {
-        return title == null ? null : post.title.contains(title);
+    private BooleanBuilder buildWhereCondition(PostSearchCondition condition) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (StringUtils.hasText(condition.title())) {
+            builder.and(post.title.contains(condition.title()));
+        }
+        if (StringUtils.hasText(condition.content())) {
+            builder.and(post.content.contains(condition.content()));
+        }
+        if (StringUtils.hasText(condition.author())) {
+            builder.and(post.member.username.contains(condition.author()));
+        }
+        if (StringUtils.hasText(condition.comment())) {
+            builder.and(post.comments.any().content.contains(condition.comment()));
+        }
+
+        return builder;
     }
 
-    private BooleanExpression containsContent(String content) {
-        return content == null ? null : post.content.contains(content);
+    private JPAQuery<PostProjection> applyPaginationAndSorting(JPAQuery<PostProjection> query, Pageable pageable, OrderSpecifier<?> orderSpec) {
+        if (orderSpec != null) {
+            query = query.orderBy(orderSpec);
+        }
+
+        if (PagingUtils.hasPageable(pageable)) {
+            query = query.offset(pageable.getOffset()).limit(pageable.getPageSize() + 1);  // +1은 Slice를 위한 처리
+        }
+
+        return query;
     }
-
-    private BooleanExpression containsAuthor(String author) {
-        return author == null ? null : post.member.username.contains(author);
-    }
-
-    private BooleanExpression containsComment(String comment) {
-        return comment == null ? null : post.comments.any().content.contains(comment);
-    }
-
-
-
 }

@@ -1,7 +1,7 @@
 package com.cmj.app.domain.post.controller;
 
 import com.cmj.app.domain.post.dto.PostSearchCondition;
-import com.cmj.app.domain.post.repository.PostProjection;
+import com.cmj.app.domain.post.entity.PostProjection;
 import com.cmj.app.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.cmj.app.domain.post.repository;
+package com.cmj.app.domain.post.entity;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;

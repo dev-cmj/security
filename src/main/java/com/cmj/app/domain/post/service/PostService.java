@@ -6,6 +6,7 @@ import com.cmj.app.domain.post.entity.PostProjection;
 import com.cmj.app.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
@@ -77,6 +78,10 @@ public class PostService {
 
     public Page<PostProjection> findPostsPage(PostSearchCondition condition) {
         return postRepository.findPostsPage(condition);
+    }
+
+    public Slice<PostProjection> findPostsSlice(PostSearchCondition condition) {
+        return postRepository.findPostsSlice(condition);
     }
 
 }

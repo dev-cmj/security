@@ -4,6 +4,7 @@ import com.cmj.app.domain.post.dto.PostSearchCondition;
 import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.post.entity.PostProjection;
 import com.cmj.app.domain.post.entity.PostSort;
+import com.cmj.app.domain.post.entity.QPostProjection;
 import com.cmj.app.global.domain.PagingUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;

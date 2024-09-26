@@ -1,8 +1,11 @@
 package com.cmj.app.domain.post.service;
 
+import com.cmj.app.domain.post.dto.PostSearchCondition;
 import com.cmj.app.domain.post.entity.Post;
+import com.cmj.app.domain.post.repository.PostProjection;
 import com.cmj.app.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
@@ -21,24 +24,28 @@ public class PostService {
     private final RedisTemplate<String, String> redisTemplate;
 
     //CRUD operations
+    @Transactional
     public long savePost(Post post) {
         return postRepository.save(post).getId();
     }
+
 
     public Post findPostById(long id) {
         return postRepository.findById(id).orElseThrow();
     }
 
+    @Transactional
     public void updatePostById(long id, Post post) {
         Post postToUpdate = postRepository.findById(id).orElseThrow();
         postToUpdate.update(post);
     }
 
+    @Transactional
     public void deletePostById(long id) {
         postRepository.deleteById(id);
     }
 
-    @Transactional
+    //조회수를 증가시킨다.
     public void increaseViewCount(Post post, String username) {
         SessionCallback<List<Object>> callback = new SessionCallback<>() {
             @Override
@@ -61,10 +68,15 @@ public class PostService {
         getViewCount(post.getId());
     }
 
+    //조회수를 가져온다.
     public Long getViewCount(Long postId) {
         String redisKey = "post:viewcount:" + postId;
         String viewCount = redisTemplate.opsForValue().get(redisKey);
         return viewCount != null ? Long.parseLong(viewCount) : 0L;
+    }
+
+    public Page<PostProjection> findPostsPage(PostSearchCondition condition) {
+        return postRepository.findPostsPage(condition);
     }
 
 }

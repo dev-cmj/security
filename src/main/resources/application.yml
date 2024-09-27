@@ -23,3 +23,15 @@ spring:
       host: localhost
       port: 6379
       password: ${REDIS_PASSWORD}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      postViewCount:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000 # 밀리초 단위 (여기서는 10초)
+        permittedNumberOfCallsInHalfOpenState: 5
+        minimumNumberOfCalls: 5
+        writableStackTraceEnabled: false

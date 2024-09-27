@@ -22,21 +22,31 @@ public class ViewCountService {
     private final RedisTemplate<String, String> redisTemplate;
     private final PostRepository postRepository;
 
-    // 조회수를 증가시킨다. Redis가 장애 시 DB로 Fallback
-    @CircuitBreaker(name = "postViewCount", fallbackMethod = "increaseViewCountFallback")
+    // 사용자가 게시글 클릭 시 조회수 증가 로직
     @Transactional
+    @CircuitBreaker(name = "postViewCount", fallbackMethod = "increaseViewCountFallback")
     public void increaseViewCount(Post post, String username) {
-        // Redis에 조회수 증가 로직
+        String viewKey = "user:viewed:post:" + post.getId() + ":" + username;
+        String redisKey = "post:viewcount:" + post.getId();
+
         SessionCallback<List<Object>> callback = new SessionCallback<>() {
             @Override
             public List<Object> execute(RedisOperations operations) {
-                String viewKey = "user:viewed:post:" + post.getId() + ":" + username;
-                String redisKey = "post:viewcount:" + post.getId();
-
                 Boolean hasViewed = operations.hasKey(viewKey);
+
                 if (Boolean.FALSE.equals(hasViewed)) {
+                    // Redis에 조회수 저장 시작
+                    String viewCount = redisTemplate.opsForValue().get(redisKey);
+
+                    // Redis에 없으면 DB 조회수로부터 시작
+                    if (viewCount == null) {
+                        Long dbViewCount = post.getViewCount();
+                        redisTemplate.opsForValue().set(redisKey, String.valueOf(dbViewCount));
+                    }
+
+                    // 조회수 증가
                     operations.opsForValue().increment(redisKey);
-                    operations.opsForValue().set(viewKey, "1", 30, TimeUnit.MINUTES);
+                    operations.opsForValue().set(viewKey, "1", 30, TimeUnit.MINUTES); // 중복 방지
                 }
                 return null;
             }

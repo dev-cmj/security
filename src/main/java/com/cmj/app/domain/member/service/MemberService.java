@@ -21,7 +21,6 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    @Cacheable(value = "member", key = "#username")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member foundMember = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));

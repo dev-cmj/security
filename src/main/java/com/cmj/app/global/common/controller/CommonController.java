@@ -1,4 +1,4 @@
-package com.cmj.app.global.common;
+package com.cmj.app.global.common.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

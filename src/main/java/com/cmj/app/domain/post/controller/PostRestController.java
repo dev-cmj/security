@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.Optional;
 
 @RestController
@@ -23,7 +24,6 @@ import java.util.Optional;
 public class PostRestController {
 
     private final PostService postService;
-    private final ViewCountService viewCountService;
 
     @GetMapping("/search")
     public ResponseEntity<?> findPosts(PostSearchCondition condition) {
@@ -37,9 +37,8 @@ public class PostRestController {
     }
 
     @GetMapping("{postId}")
-    public ResponseEntity<?> findPostById(@PathVariable Long postId, String username) {
-        Optional<Post> post = postService.findPostWithMemberAndBoardById(postId);
-        viewCountService.increaseViewCount(post.orElseThrow(), username);
+    public ResponseEntity<?> findPostById(@PathVariable Long postId, UserPrincipal userPrincipal) {
+        Optional<Post> post = postService.findPostWithMemberAndBoardByIdWithViewCount(postId, userPrincipal.getName());
         return ResponseEntity.ok(post);
     }
 }

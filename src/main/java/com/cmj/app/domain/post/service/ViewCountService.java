@@ -74,4 +74,20 @@ public class ViewCountService {
                     .orElse(0L);
         }
     }
+
+    //Redis에 있는 조회수를 DB에 저장하는 스케줄러 로직, 같거나 더 많은 조회수가 있을 경우 DB에 저장
+    public void saveViewCountFromRedisToDB() {
+        redisTemplate.keys("post:viewcount:*")
+                .forEach(key -> {
+                    String postId = key.split(":")[2];
+                    Long redisViewCount = Long.parseLong(redisTemplate.opsForValue().get(key));
+                    Long dbViewCount = postRepository.findById(Long.parseLong(postId))
+                            .map(Post::getViewCount)
+                            .orElse(0L);
+
+                    if (redisViewCount >= dbViewCount) {
+                        postRepository.increaseViewCount(Long.parseLong(postId));
+                    }
+                });
+    }
 }

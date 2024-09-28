@@ -7,15 +7,10 @@ import com.cmj.app.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 public class PostService {
 
     private final PostRepository postRepository;
+
+    private final ViewCountService viewCountService;
 
     //CRUD operations
     @Transactional
@@ -57,6 +54,13 @@ public class PostService {
 
     public Optional<Post> findPostWithMemberAndBoardById(Long postId) {
         return postRepository.findPostWithMemberAndBoardById(postId);
+    }
+
+    @Transactional
+    public Optional<Post> findPostWithMemberAndBoardByIdWithViewCount(Long postId, String username) {
+        Optional<Post> post = postRepository.findPostWithMemberAndBoardById(postId);
+        viewCountService.increaseViewCount(post.orElseThrow(), username);
+        return post;
     }
 
 

@@ -58,7 +58,6 @@ public class ViewCountService {
     // Fallback 메서드
     @Transactional
     public void increaseViewCountFallback(Post post, String username, Throwable throwable) {
-        // Fallback: Redis 장애 시 DB로 조회수 증가 처리
         log.error("Redis 장애 발생, DB로 전환", throwable);
         postRepository.increaseViewCount(post.getId());
     }

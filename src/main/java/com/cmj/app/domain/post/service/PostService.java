@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -53,5 +54,10 @@ public class PostService {
     public Slice<PostProjection> findPostsSlice(PostSearchCondition condition) {
         return postRepository.findPostsSlice(condition);
     }
+
+    public Optional<Post> findPostWithMemberAndBoardById(Long postId) {
+        return postRepository.findPostWithMemberAndBoardById(postId);
+    }
+
 
 }

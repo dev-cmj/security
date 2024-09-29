@@ -19,14 +19,11 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    private final ViewCountService viewCountService;
-
     //CRUD operations
     @Transactional
     public long savePost(Post post) {
         return postRepository.save(post).getId();
     }
-
 
     public Post findPostById(long id) {
         return postRepository.findById(id).orElseThrow();
@@ -57,9 +54,13 @@ public class PostService {
     }
 
     @Transactional
-    public Optional<Post> findPostWithMemberAndBoardByIdWithViewCount(Long postId, String username) {
+    public Optional<Post> findPostWithMemberAndBoardById(Long postId, String username) {
         Optional<Post> post = postRepository.findPostWithMemberAndBoardById(postId);
-        viewCountService.increaseViewCount(post.orElseThrow(), username);
+        post.ifPresent(p -> {
+            if (!p.getMember().getUsername().equals(username)) {
+                postRepository.increaseViewCount(postId);
+            }
+        });
         return post;
     }
 

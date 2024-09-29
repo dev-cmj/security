@@ -4,7 +4,6 @@ import com.cmj.app.domain.post.dto.PostSearchCondition;
 import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.post.entity.PostProjection;
 import com.cmj.app.domain.post.service.PostService;
-import com.cmj.app.domain.post.service.ViewCountService;
 import com.cmj.app.global.domain.PaginationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,9 +35,11 @@ public class PostRestController {
         }
     }
 
-    @GetMapping("{postId}")
-    public ResponseEntity<?> findPostById(@PathVariable Long postId, UserPrincipal userPrincipal) {
-        Optional<Post> post = postService.findPostWithMemberAndBoardByIdWithViewCount(postId, userPrincipal.getName());
+    @GetMapping("/{postId}")
+    public ResponseEntity<?> findPostWithMemberAndBoardById(@PathVariable Long postId, UserPrincipal userPrincipal) {
+        Optional<Post> post = postService.findPostWithMemberAndBoardById(postId, userPrincipal.getName());
         return ResponseEntity.ok(post);
     }
+
+
 }

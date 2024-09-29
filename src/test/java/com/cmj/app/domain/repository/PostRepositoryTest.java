@@ -2,7 +2,6 @@ package com.cmj.app.domain.repository;
 
 import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.post.repository.PostRepository;
-import com.cmj.app.domain.post.service.ViewCountService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

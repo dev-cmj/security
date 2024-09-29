@@ -16,6 +16,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 100
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+        generate_statistics: true
     defer-datasource-initialization: true  # ddl-auto 실행 후 스크립트 실행
 
   data:

@@ -18,6 +18,7 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ViewCountService viewCountService;
 
     //CRUD operations
     @Transactional
@@ -49,20 +50,8 @@ public class PostService {
         return postRepository.findPostsSlice(condition);
     }
 
-    public Optional<Post> findPostWithMemberAndBoardById(Long postId) {
-        return postRepository.findPostWithMemberAndBoardById(postId);
+    public Optional<Post> findPostWithMemberAndBoardByIdWithEntity(Long postId) {
+        return postRepository.findPostByIdWithEntity(postId);
     }
-
-    @Transactional
-    public Optional<Post> findPostWithMemberAndBoardById(Long postId, String username) {
-        Optional<Post> post = postRepository.findPostWithMemberAndBoardById(postId);
-        post.ifPresent(p -> {
-            if (!p.getMember().getUsername().equals(username)) {
-                postRepository.increaseViewCount(postId);
-            }
-        });
-        return post;
-    }
-
 
 }

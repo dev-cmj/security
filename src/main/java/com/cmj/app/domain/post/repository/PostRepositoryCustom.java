@@ -10,9 +10,15 @@ import org.springframework.data.domain.Slice;
 import java.util.Optional;
 
 public interface PostRepositoryCustom {
-    public Optional<Post> findPostWithMemberAndBoardById(Long postId);
-    public Page<PostProjection> findPostsPage(PostSearchCondition condition);
-    public Slice<PostProjection> findPostsSlice(PostSearchCondition condition);
-    public void increaseViewCount(Long postId);
-    public Optional<PostProjection> findViewCountById(Long postId);
+    Optional<Post> findPostByIdWithEntity(Long postId);
+
+    Optional<PostProjection> findPostBydWithProjection(Long postId);
+
+    Page<PostProjection> findPostsPage(PostSearchCondition condition);
+
+    Slice<PostProjection> findPostsSlice(PostSearchCondition condition);
+
+    void increaseViewCount(Long postId);
+
+    Optional<PostProjection> findViewCountById(Long postId);
 }

@@ -8,7 +8,6 @@ import com.cmj.app.domain.post.entity.QPostProjection;
 import com.cmj.app.global.domain.PagingUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
@@ -34,15 +33,20 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
 
-    // custom query methods
+
     @Override
-    public Optional<Post> findPostWithMemberAndBoardById(Long postId) {
+    public Optional<Post> findPostByIdWithEntity(Long postId) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(post)
                 .leftJoin(post.member).fetchJoin()
                 .leftJoin(post.board).fetchJoin()
                 .where(post.id.eq(postId))
                 .fetchOne());
+    }
+
+    @Override
+    public Optional<PostProjection> findPostWithMemberAndBoardByProjection(Long postId) {
+        return Optional.empty();
     }
 
     @Override

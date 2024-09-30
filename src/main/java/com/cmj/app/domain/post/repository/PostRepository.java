@@ -9,7 +9,4 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
-    @Modifying
-    @Query("update Post p set p.viewCount = p.viewCount + 1 where p.id = :postId")
-    void increaseViewCount(@Param("postId") Long postId);
 }

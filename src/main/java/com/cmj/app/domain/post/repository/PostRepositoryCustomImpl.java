@@ -11,6 +11,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
@@ -30,6 +32,7 @@ import static com.cmj.app.global.domain.SortUtils.getSort;
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager entityManager;
 
     // custom query methods
     @Override
@@ -75,6 +78,26 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         }
 
         return new SliceImpl<>(result, pageable, hasNext);
+    }
+
+    @Override
+    public void increaseViewCount(Long postId) {
+        new JPAUpdateClause(entityManager, post)
+                .where(post.id.eq(postId))
+                .set(post.viewCount, post.viewCount.add(1))
+                .execute();
+    }
+
+    @Override
+    public Optional<PostProjection> findViewCountById(Long postId) {
+        return Optional.ofNullable(queryFactory
+                .select(new QPostProjection(
+                        post.id,
+                        post.viewCount
+                ))
+                .from(post)
+                .where(post.id.eq(postId))
+                .fetchOne());
     }
 
     private JPAQuery<PostProjection> getJpaQuery(PostSearchCondition condition) {

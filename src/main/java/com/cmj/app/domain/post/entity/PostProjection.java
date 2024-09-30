@@ -24,5 +24,11 @@ public class PostProjection {
         this.likeCount = likeCount;
     }
 
+    @QueryProjection
+    public PostProjection(Long id, Long viewCount) {
+        this.id = id;
+        this.viewCount = viewCount;
+    }
+
 
 }

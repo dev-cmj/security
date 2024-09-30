@@ -2,6 +2,7 @@ package com.cmj.app.domain.repository;
 
 import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.post.repository.PostRepository;
+import com.cmj.app.domain.post.service.ViewCountService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class PostRepositoryTest {
             int finalI = i;
             executorService.submit(() -> {
                 try {
-                    viewCountService.increaseViewCount(post, String.valueOf(finalI));
+                    viewCountService.increaseViewCountInRedis(postId, String.valueOf(finalI));
                 } catch (Exception e) {
                     System.out.println("조회수 증가 실패: " + e.getMessage());
                 } finally {
@@ -62,7 +63,7 @@ public class PostRepositoryTest {
         executorService.shutdown();
 
         // 최종 조회수 확인
-        Long viewCount = viewCountService.getViewCount(postId);
+        long viewCount = viewCountService.getViewCountFromRedis(postId);
         System.out.println("최종 조회수: " + viewCount);
     }
 

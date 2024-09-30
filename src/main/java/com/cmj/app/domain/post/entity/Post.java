@@ -23,6 +23,7 @@ public class Post {
 
     private String title;
     private String content;
+
     @Setter
     private Long viewCount;
 
@@ -45,6 +46,10 @@ public class Post {
     public void update(Post post) {
         this.title = post.title;
         this.content = post.content;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
     }
 
 }

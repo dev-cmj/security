@@ -13,4 +13,6 @@ public interface PostRepositoryCustom {
     public Optional<Post> findPostWithMemberAndBoardById(Long postId);
     public Page<PostProjection> findPostsPage(PostSearchCondition condition);
     public Slice<PostProjection> findPostsSlice(PostSearchCondition condition);
+    public void increaseViewCount(Long postId);
+    public Optional<PostProjection> findViewCountById(Long postId);
 }

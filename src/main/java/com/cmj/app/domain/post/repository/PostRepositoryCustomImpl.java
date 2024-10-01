@@ -45,8 +45,23 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Optional<PostProjection> findPostWithMemberAndBoardByProjection(Long postId) {
-        return Optional.empty();
+    public Optional<PostProjection> findPostByIdWithProjection(Long postId) {
+        return Optional.ofNullable(queryFactory
+                .select(new QPostProjection(
+                        post.id,
+                        post.title,
+                        post.content,
+                        post.viewCount,
+                        post.member.username,
+                        comment.countDistinct(),
+                        like.countDistinct()
+                ))
+                .from(post)
+                .leftJoin(post.member)
+                .leftJoin(post.comments, comment)
+                .leftJoin(post.likes, like)
+                .where(post.id.eq(postId))
+                .fetchOne());
     }
 
     @Override

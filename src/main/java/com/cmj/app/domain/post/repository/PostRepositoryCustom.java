@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface PostRepositoryCustom {
     Optional<Post> findPostByIdWithEntity(Long postId);
 
-    Optional<PostProjection> findPostBydWithProjection(Long postId);
+    Optional<PostProjection> findPostByIdWithProjection(Long postId);
 
     Page<PostProjection> findPostsPage(PostSearchCondition condition);
 

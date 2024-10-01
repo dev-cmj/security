@@ -62,7 +62,7 @@ public class ViewCountServiceTest {
         when(redisTemplate.execute(any(SessionCallback.class))).thenReturn(null);
 
         // When
-        viewCountService.increaseViewCount(post, username);
+        viewCountService.increaseViewCountInRedis(post.getId(), username);
 
         // Then
         verify(redisTemplate, times(1)).execute(any(SessionCallback.class));
@@ -85,7 +85,7 @@ public class ViewCountServiceTest {
         when(redisTemplate.execute(any(SessionCallback.class))).thenThrow(new RuntimeException("Redis failure"));
 
         // When
-        viewCountService.increaseViewCount(post, username);
+        viewCountService.getViewCountFromRedis(post.getId());
 
         // Then
         // Verify that Redis was tried and failed, then DB was called
@@ -108,7 +108,7 @@ public class ViewCountServiceTest {
         when(valueOperations.get(redisKey)).thenReturn("5");
 
         // When
-        Long viewCount = viewCountService.getViewCount(postId);
+        Long viewCount = viewCountService.getViewCountFromRedis(postId);
 
         // Then
         assertEquals(Long.valueOf(5), viewCount);
@@ -134,7 +134,7 @@ public class ViewCountServiceTest {
         when(postRepository.findById(postId)).thenReturn(Optional.of(post));
 
         // When
-        Long viewCount = viewCountService.getViewCount(postId);
+        Long viewCount = viewCountService.getViewCountFromRedis(postId);
 
         // Then
         assertEquals(Long.valueOf(10), viewCount); // DB의 조회수를 반환

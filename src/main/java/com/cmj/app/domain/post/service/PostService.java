@@ -10,8 +10,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -50,8 +48,37 @@ public class PostService {
         return postRepository.findPostsSlice(condition);
     }
 
-    public Optional<Post> findPostWithMemberAndBoardByIdWithEntity(Long postId) {
-        return postRepository.findPostByIdWithEntity(postId);
+    public Post findPostWithMemberAndBoardByIdWithEntity(Long postId) {
+        return postRepository.findPostByIdWithEntity(postId).orElseThrow();
     }
+
+    public PostProjection findPostWithMemberAndBoardByIdWithProjection(Long postId) {
+        return postRepository.findPostByIdWithProjection(postId).orElseThrow();
+    }
+
+    @Transactional
+    public void increaseViewCount(Long postId, String userId) {
+        viewCountService.increaseViewCountInRedis(postId, userId);
+    }
+
+    public long getViewCount(Long postId) {
+        return viewCountService.getViewCountFromRedis(postId);
+    }
+
+    @Transactional
+    public long increaseAndGetViewCount(Long postId, String userId) {
+        increaseViewCount(postId, userId);
+        return getViewCount(postId);
+    }
+
+    //조회수 증가 후 게시글 조회
+    @Transactional
+    public PostProjection increaseAndGetViewCountAndFindPostWithMemberAndBoardById(Long postId, String userId) {
+        long viewCount = increaseAndGetViewCount(postId, userId);
+        PostProjection post = findPostWithMemberAndBoardByIdWithProjection(postId);
+        post.setViewCount(viewCount);
+        return post;
+    }
+
 
 }

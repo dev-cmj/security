@@ -1,7 +1,6 @@
 package com.cmj.app.domain.post.controller;
 
 import com.cmj.app.domain.post.dto.PostSearchCondition;
-import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.post.entity.PostProjection;
 import com.cmj.app.domain.post.service.PostService;
 import com.cmj.app.global.domain.PaginationType;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.file.attribute.UserPrincipal;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,8 +35,7 @@ public class PostRestController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<?> findPostWithMemberAndBoardById(@PathVariable Long postId, UserPrincipal userPrincipal) {
-        Optional<Post> post = postService.findPostWithMemberAndBoardById(postId, userPrincipal.getName());
-        return ResponseEntity.ok(post);
+        return ResponseEntity.ok(postService.increaseAndGetViewCountAndFindPostWithMemberAndBoardById(postId, userPrincipal.getName()));
     }
 
 

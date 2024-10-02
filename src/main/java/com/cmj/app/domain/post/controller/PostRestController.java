@@ -1,5 +1,8 @@
 package com.cmj.app.domain.post.controller;
 
+import com.cmj.app.domain.member.entity.Member;
+import com.cmj.app.domain.member.service.MemberService;
+import com.cmj.app.domain.post.dto.PostRequest;
 import com.cmj.app.domain.post.dto.PostSearchCondition;
 import com.cmj.app.domain.post.entity.PostProjection;
 import com.cmj.app.domain.post.service.PostService;
@@ -8,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipal;
 
@@ -20,6 +20,7 @@ import java.nio.file.attribute.UserPrincipal;
 @RequestMapping("/api/posts")
 public class PostRestController {
 
+    private final MemberService memberService;
     private final PostService postService;
 
     @GetMapping("/search")
@@ -33,9 +34,32 @@ public class PostRestController {
         }
     }
 
+    /*
+    * 게시글 조회 후 조회수 증가 로직
+     */
     @GetMapping("/{postId}")
     public ResponseEntity<?> findPostWithMemberAndBoardById(@PathVariable Long postId, UserPrincipal userPrincipal) {
         return ResponseEntity.ok(postService.increaseAndGetViewCountAndFindPostWithMemberAndBoardById(postId, userPrincipal.getName()));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> savePost(@RequestBody PostRequest request, UserPrincipal userPrincipal) {
+        Member member = memberService.findByUsername(userPrincipal.getName());
+        Long postId = postService.savePost(request.toEntity(member));
+        return ResponseEntity.ok(postId);
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostRequest request, UserPrincipal userPrincipal) {
+        Member member = memberService.findByUsername(userPrincipal.getName());
+        postService.updatePostById(postId, request.toEntity(member));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+        postService.deletePostById(postId);
+        return ResponseEntity.ok().build();
     }
 
 

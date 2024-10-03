@@ -39,6 +39,12 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    public void validatePostOwner(Long postId, String username) {
+        postRepository.findById(postId)
+                .filter(post -> post.isOwner(username))
+                .orElseThrow(() -> new IllegalArgumentException("게시글 작성자만 수정, 삭제 가능합니다."));
+    }
+
 
     public Page<PostProjection> findPostsPage(PostSearchCondition condition) {
         return postRepository.findPostsPage(condition);

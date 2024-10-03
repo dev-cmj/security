@@ -35,7 +35,7 @@ public class PostRestController {
     }
 
     /*
-    * 게시글 조회 후 조회수 증가 로직
+     * 게시글 조회 후 조회수 증가 로직
      */
     @GetMapping("/{postId}")
     public ResponseEntity<?> findPostWithMemberAndBoardById(@PathVariable Long postId, UserPrincipal userPrincipal) {
@@ -52,12 +52,15 @@ public class PostRestController {
     @PutMapping("/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostRequest request, UserPrincipal userPrincipal) {
         Member member = memberService.findByUsername(userPrincipal.getName());
+        postService.validatePostOwner(postId, member.getUsername());
         postService.updatePostById(postId, request.toEntity(member));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, UserPrincipal userPrincipal) {
+        Member member = memberService.findByUsername(userPrincipal.getName());
+        postService.validatePostOwner(postId, member.getUsername());
         postService.deletePostById(postId);
         return ResponseEntity.ok().build();
     }

@@ -2,6 +2,7 @@ package com.cmj.app.domain.channel.entity;
 
 import com.cmj.app.domain.board.entity.Board;
 import com.cmj.app.domain.category.entity.Category;
+import com.cmj.app.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Channel {
+public class Channel extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

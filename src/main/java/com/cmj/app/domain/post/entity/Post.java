@@ -4,6 +4,7 @@ import com.cmj.app.domain.board.entity.Board;
 import com.cmj.app.domain.comment.entity.Comment;
 import com.cmj.app.domain.like.entity.Like;
 import com.cmj.app.domain.member.entity.Member;
+import com.cmj.app.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,6 +51,10 @@ public class Post {
 
     public void increaseViewCount() {
         this.viewCount++;
+    }
+
+    public boolean isOwner(String username) {
+        return this.member.getUsername().equals(username);
     }
 
 }

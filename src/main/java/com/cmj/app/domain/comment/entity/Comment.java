@@ -2,6 +2,7 @@ package com.cmj.app.domain.comment.entity;
 
 import com.cmj.app.domain.post.entity.Post;
 import com.cmj.app.domain.member.entity.Member;
+import com.cmj.app.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,13 +13,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Comment {
+public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String content;
-    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

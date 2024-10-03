@@ -2,6 +2,7 @@ package com.cmj.app.domain.like.entity;
 
 import com.cmj.app.domain.member.entity.Member;
 import com.cmj.app.domain.post.entity.Post;
+import com.cmj.app.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = {"member_id", "post_id"})
         }
 )
-public class Like {
+public class Like extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

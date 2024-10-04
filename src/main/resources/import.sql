@@ -26,3 +26,11 @@ insert into post (id, title, content, view_count, member_id, board_id) values (7
 insert into post (id, title, content, view_count, member_id, board_id) values (8, '제목8', '내용8', 0, 3, 4);
 insert into post (id, title, content, view_count, member_id, board_id) values (9, '제목9', '내용9', 0, 4, 5);
 insert into post (id, title, content, view_count, member_id, board_id) values (10, '제목10', '내용10', 0, 5, 5);
+
+insert into comment (id, content, member_id, post_id) values (1, '댓글1', 1, 1);
+insert into comment (id, content, member_id, post_id) values (2, '댓글2', 2, 1);
+insert into comment (id, content, member_id, post_id) values (3, '댓글3', 3, 1);
+insert into comment (id, content, member_id, post_id) values (4, '댓글4', 4, 1);
+insert into comment (id, content, member_id, post_id, parent_id) values (5, '댓글5', 5, 1, 1);
+insert into comment (id, content, member_id, post_id, parent_id) values (6, '댓글6', 1, 1, 1);
+insert into comment (id, content, member_id, post_id, parent_id) values (7, '댓글7', 2, 1, 1);

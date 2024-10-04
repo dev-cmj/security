@@ -1,13 +1,18 @@
 package com.cmj.app.domain.post.entity;
 
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Builder
 public class PostProjection {
     private Long id;
     private String title;
     private String content;
+    @Setter
     private Long viewCount;
     private String author;
     private Long commentCount;

@@ -23,6 +23,7 @@ import java.util.Optional;
 import static com.cmj.app.domain.comment.entity.QComment.comment;
 import static com.cmj.app.domain.like.entity.QLike.like;
 import static com.cmj.app.domain.post.entity.QPost.post;
+import static com.cmj.app.global.domain.QueryDslUtils.applyPageableAndSorting;
 import static com.cmj.app.global.domain.SortUtils.getSort;
 
 
@@ -32,7 +33,6 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
-
 
     @Override
     public Optional<Post> findPostByIdWithEntity(Long postId) {
@@ -73,7 +73,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         Long totalCount = getCount(condition);
 
         JPAQuery<PostProjection> query = getJpaQuery(condition);
-        query = applyPaginationAndSorting(query, pageable, orderSpec);
+        query = applyPageableAndSorting(query, pageable, orderSpec);
 
         List<PostProjection> list = query.fetch();
         return new PageImpl<>(list, pageable, totalCount);
@@ -86,7 +86,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         OrderSpecifier<?> orderSpec = getSort(condition.sortField(), condition.order(), PostSort.class);
 
         JPAQuery<PostProjection> query = getJpaQuery(condition);
-        query = applyPaginationAndSorting(query, pageable, orderSpec);
+        query = applyPageableAndSorting(query, pageable, orderSpec);
 
         List<PostProjection> result = query.fetch();
 
@@ -134,8 +134,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .leftJoin(post.member)
                 .leftJoin(post.comments, comment)
                 .leftJoin(post.likes, like)
-                .where(buildWhereCondition(condition))
-                .groupBy(post.id);
+                .where(buildWhereCondition(condition));
     }
 
     private Long getCount(PostSearchCondition condition) {
@@ -165,15 +164,4 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return builder;
     }
 
-    private JPAQuery<PostProjection> applyPaginationAndSorting(JPAQuery<PostProjection> query, Pageable pageable, OrderSpecifier<?> orderSpec) {
-        if (orderSpec != null) {
-            query = query.orderBy(orderSpec);
-        }
-
-        if (PagingUtils.hasPageable(pageable)) {
-            query = query.offset(pageable.getOffset()).limit(pageable.getPageSize() + 1);  // +1은 Slice를 위한 처리
-        }
-
-        return query;
-    }
 }

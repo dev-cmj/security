@@ -45,7 +45,6 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("게시글 작성자만 수정, 삭제 가능합니다."));
     }
 
-
     public Page<PostProjection> findPostsPage(PostSearchCondition condition) {
         return postRepository.findPostsPage(condition);
     }
@@ -80,10 +79,16 @@ public class PostService {
     //조회수 증가 후 게시글 조회
     @Transactional
     public PostProjection increaseAndGetViewCountAndFindPostWithMemberAndBoardById(Long postId, String userId) {
-        long viewCount = increaseAndGetViewCount(postId, userId);
         PostProjection post = findPostWithMemberAndBoardByIdWithProjection(postId);
-        post.setViewCount(viewCount);
+        post.setViewCount(increaseAndGetViewCount(postId, userId));
         return post;
+    }
+
+    //글이 존재하는지 확인
+    public void existsById(Long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new IllegalArgumentException("게시글이 존재하지 않습니다.");
+        }
     }
 
 

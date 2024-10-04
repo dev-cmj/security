@@ -1,6 +1,8 @@
 package com.cmj.app.global.domain;
 
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.PageRequest;

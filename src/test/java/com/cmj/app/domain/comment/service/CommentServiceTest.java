@@ -3,6 +3,7 @@ package com.cmj.app.domain.comment.service;
 import com.cmj.app.domain.comment.dto.CommentRequest;
 import com.cmj.app.domain.comment.dto.CommentSearchCondition;
 import com.cmj.app.domain.comment.entity.CommentProjection;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -69,11 +70,40 @@ class CommentServiceTest {
         // Then
         Assertions.assertThat(commentsSlice).isNotNull();
         Assertions.assertThat(commentsSlice.getContent()).isNotEmpty();
-
-        log.info(commentsSlice.getContent().toString());
     }
 
+    @Test
+    void TestUpdateCommentById() {
+        // Given (댓글 수정 요청)
+        CommentRequest commentRequest = CommentRequest.builder()
+                .content("댓글 수정 테스트")
+                .build();
+        Long commentId = 1L;
+        String username = "test1";
 
+        // When
+        commentService.updateCommentById(commentId, commentRequest, username);
+
+        // Then
+        // 수정된 댓글 내용 확인
+        Assertions.assertThat(commentService.findCommentById(commentId).getContent()).isEqualTo("댓글 수정 테스트");
+    }
+
+    @Test
+    void TestDeleteCommentById() {
+        // Given (댓글 삭제 요청)
+        Long commentId = 1L;
+        String username = "test1";
+
+        // When
+        commentService.deleteCommentById(commentId, username);
+
+        // Then
+        // 댓글 삭제 확인
+        Assertions.assertThatThrownBy(() -> commentService.findCommentById(commentId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Comment not found with id: " + commentId);
+    }
 
 
 }

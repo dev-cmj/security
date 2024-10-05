@@ -38,7 +38,6 @@ public class CommentService {
         // 부모 댓글이 있는지 확인 (대댓글 여부 판단)
         Comment parentComment = null;
         if (commentRequest.getParentId() != null) {
-            log.info("parent comment id: {}", commentRequest.getParentId());
             parentComment = commentRepository.findById(commentRequest.getParentId())
                     .orElseThrow(() -> new EntityNotFoundException("Parent comment not found with id: " + commentRequest.getParentId()));
         }
@@ -66,9 +65,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateCommentById(CommentRequest commentRequest, String username) {
-        validateCommentOwner(commentRequest.getCommentId(), username);
-        Comment comment = commentRepository.findById(commentRequest.getCommentId()).orElseThrow();
+    public void updateCommentById(Long commentId, CommentRequest commentRequest, String username) {
+        validateCommentOwner(commentId, username);
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
         comment.updateContent(commentRequest.getContent());
     }
 
@@ -84,6 +84,11 @@ public class CommentService {
 
     public Slice<CommentProjection> findCommentsSlice(CommentSearchCondition condition) {
         return commentRepository.findCommentsSlice(condition);
+    }
+
+    public Comment findCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
     }
 
 

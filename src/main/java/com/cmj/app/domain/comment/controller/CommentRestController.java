@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -38,6 +35,20 @@ public class CommentRestController {
             Page<CommentProjection> comments = commentService.findCommentsPage(condition);
             return ResponseEntity.ok(comments);
         }
+    }
+
+    //댓글 단일 조회는 api 미제공
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, CommentRequest commentRequest, UserPrincipal userPrincipal) {
+        commentService.updateCommentById(commentId, commentRequest, userPrincipal.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, UserPrincipal userPrincipal) {
+        commentService.deleteCommentById(commentId, userPrincipal.getName());
+        return ResponseEntity.ok().build();
     }
 
 

@@ -1,18 +1,17 @@
 package com.cmj.app.domain.auth.controller;
 
-import com.cmj.app.domain.auth.dto.LoginRequest;
-import com.cmj.app.domain.auth.dto.LoginResponse;
 import com.cmj.app.domain.auth.dto.SignUpRequest;
 import com.cmj.app.domain.auth.dto.SignUpResponse;
 import com.cmj.app.domain.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

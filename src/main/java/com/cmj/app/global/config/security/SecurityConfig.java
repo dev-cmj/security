@@ -1,6 +1,6 @@
 package com.cmj.app.global.config.security;
 
-import com.cmj.app.global.config.jwt.JwtAuthenticationFilter;
+import com.cmj.app.global.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

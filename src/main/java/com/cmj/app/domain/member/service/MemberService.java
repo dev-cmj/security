@@ -1,16 +1,19 @@
 package com.cmj.app.domain.member.service;
 
+import com.cmj.app.domain.auth.dto.UserPrincipal;
 import com.cmj.app.domain.member.entity.Member;
 import com.cmj.app.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +28,14 @@ public class MemberService implements UserDetailsService {
         Member foundMember = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
-        return User.builder()
-                .username(foundMember.getUsername())
-                .password(foundMember.getPassword())
-                .roles(foundMember.getRole().name())
-                .build();
+        Collection<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(foundMember.getRole().name()));
+
+        return UserPrincipal.of(
+                foundMember.getUsername(),
+                foundMember.getPassword(),
+                foundMember.getName(),
+                foundMember.getEmail(),
+                authorities);
     }
 
     public Member findById(Long id) {
@@ -48,7 +54,7 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public Member save(Member member) {
-       return memberRepository.save(member);
+        return memberRepository.save(member);
     }
 
     @Transactional

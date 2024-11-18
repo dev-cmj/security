@@ -7,6 +7,6 @@ import org.springframework.data.domain.Slice;
 
 public interface CommentRepositoryCustom {
 
-    Page<CommentProjection> findCommentsPage(CommentSearchCondition condition);
-    Slice<CommentProjection> findCommentsSlice(CommentSearchCondition condition);
+        Page<CommentProjection> findCommentsPage(CommentSearchCondition condition);
+        Slice<CommentProjection> findCommentsSlice(CommentSearchCondition condition);
 }

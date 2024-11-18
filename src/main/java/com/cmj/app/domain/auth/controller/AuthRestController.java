@@ -22,31 +22,6 @@ public class AuthRestController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
-
-        if (authService.isAlreadyLoggedIn(request)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 로그인된 사용자입니다.");
-        }
-
-        String deviceId = authService.getOrCreateDeviceId(request, response);
-        LoginResponse loginResponse = authService.login(loginRequest, deviceId);
-
-        // 쿠키에 액세스 토큰과 리프레시 토큰 저장
-        authService.setTokensInCookies(response, loginResponse);
-
-        return ResponseEntity.ok(loginResponse);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(@CookieValue("DeviceId") String deviceId,
-                                    Authentication authentication,
-                                    HttpServletResponse response) {
-        authService.logout(authentication.getName(), deviceId);
-        authService.removeTokensInCookies(response);
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request) {
         if (authService.isAlreadyLoggedIn(request)) {
@@ -55,12 +30,6 @@ public class AuthRestController {
 
         SignUpResponse signUpResponse = authService.signup(signUpRequest);
         return ResponseEntity.ok(signUpResponse);
-    }
-
-    @GetMapping("/status")
-    public ResponseEntity<?> status(HttpServletRequest request) {
-        boolean loggedIn = authService.isAlreadyLoggedIn(request);
-        return ResponseEntity.ok(loggedIn);
     }
 
 }

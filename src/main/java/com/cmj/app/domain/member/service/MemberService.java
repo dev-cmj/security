@@ -1,8 +1,10 @@
 package com.cmj.app.domain.member.service;
 
-import com.cmj.app.domain.auth.dto.UserPrincipal;
 import com.cmj.app.domain.member.entity.Member;
+import com.cmj.app.domain.member.entity.MemberRole;
 import com.cmj.app.domain.member.repository.MemberRepository;
+import com.cmj.app.global.auth.dto.UserPrincipal;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +24,17 @@ public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @PostConstruct
+    public void init() {
+        Member admin = Member.builder()
+                .username("admin")
+                .password(passwordEncoder.encode("admin"))
+                .name("admin")
+                .email("test")
+                .role(MemberRole.ADMIN).build();
+        memberRepository.findByUsername("admin").orElseGet(() -> memberRepository.save(admin));
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

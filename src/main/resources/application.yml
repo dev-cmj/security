@@ -21,7 +21,6 @@ spring:
           batch_versioned_data: true
         order_inserts: true
         order_updates: true
-        generate_statistics: true
     defer-datasource-initialization: true  # ddl-auto 실행 후 스크립트 실행
 
   data:
@@ -41,3 +40,20 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 5
         minimumNumberOfCalls: 5
         writableStackTraceEnabled: false
+
+auth:
+  provider:
+    db: true
+    ad: false
+
+security:
+  jwt:
+    cookie:
+      path: /
+      name: __sid
+      domain:
+      max-age: 3600
+      http-only: true
+      secure: false
+    secret-key: M39weGRwoaA/SyChBpsw31uv79jgMDOGf6xt3HK8bq8=
+    expiration: 86400

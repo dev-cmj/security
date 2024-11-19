@@ -1,0 +1,253 @@
+// BTN
+@mixin btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+  margin: 0;
+  width: auto;
+  gap: 4px;
+}
+
+@mixin btn-df {
+  background: #F9F9F9;
+  color: #000;
+  font-weight: 500;
+}
+
+@mixin btn-df-line {
+  background-color: #FFFFFF;
+  border: 1px solid #E9E9E9;
+}
+
+@mixin btn-main {
+  background: #003569;
+  color: #fff;
+  font-weight: 700;
+}
+
+@mixin btn-main-line {
+  background: #f4faff;
+  border: 1px solid #bacadb;
+  color: #003569;
+  font-weight: 500;
+}
+
+@mixin btn-sub {
+  background: #EFF9FF;
+  color: #0064C0;
+  font-weight: 500;
+}
+
+@mixin btn-dis {
+  background: #F5F5F5;
+  color: #C8C8C8;
+}
+
+// height 28
+.btn-xs {
+  @mixin btn-xs {
+    @include btn;
+    height: 28px;
+    font-size: 12px;
+    font-weight: 500
+  }
+
+  &-df {
+    @include btn-xs;
+    @include btn-df;
+  }
+
+  &-df-line {
+    @include btn-xs;
+    @include btn-df-line;
+    font-weight: 400;
+  }
+
+  &-main {
+    @include btn-xs;
+    @include btn-main;
+  }
+
+  &-main-line {
+    @include btn-xs;
+    @include btn-main-line;
+  }
+
+  &-sub {
+    @include btn-xs;
+    @include btn-sub;
+  }
+
+  &-dis {
+    @include btn-xs;
+    @include btn-dis;
+  }
+}
+
+// height 36
+.btn-s {
+  @mixin btn-s {
+    @include btn;
+    min-width: 82px;
+    height: 36px;
+    font-size: 12px
+  }
+
+  &-df {
+    @include btn-s;
+    @include btn-df;
+  }
+
+  &-main {
+    @include btn-s;
+    @include btn-main;
+  }
+
+  &-main-line {
+    @include btn-s;
+    @include btn-main-line;
+    color: #003569;
+    font-weight: 500;
+  }
+
+  &-sub {
+    @include btn-s;
+    @include btn-sub;
+  }
+
+  &-dis {
+    @include btn-s;
+    @include btn-dis;
+  }
+}
+
+// height 44
+.btn-m {
+  @mixin btn-m {
+    @include btn;
+    min-width: 119px;
+    height: 44px;
+  }
+
+  &-df {
+    @include btn-m;
+    @include btn-df;
+  }
+
+  &-main {
+    @include btn-m;
+    @include btn-main;
+  }
+
+  &-sub {
+    @include btn-m;
+    @include btn-sub;
+  }
+
+  &-dis {
+    @include btn-m;
+    @include btn-dis;
+  }
+}
+
+// height 52
+.btn-l {
+  @mixin btn-l {
+    @include btn;
+    min-width: 128px;
+    height: 52px;
+    font-size: 14px;
+  }
+
+  &-df {
+    @include btn-l;
+    @include btn-df;
+  }
+
+  &-main {
+    @include btn-l;
+    @include btn-main;
+    background-color: #003569;
+  }
+
+  &-sub {
+    @include btn-l;
+    @include btn-sub;
+  }
+
+  &-dis {
+    @include btn-l;
+    @include btn-dis;
+  }
+}
+
+// height 68
+.btn-xl {
+  @mixin btn-xl {
+    @include btn;
+    min-width: 180px;
+    width: 260px;
+    height: 68px;
+    font-size: 16px;
+  }
+
+  &-df {
+    @include btn-xl;
+    @include btn-df;
+  }
+
+  &-main {
+    @include btn-xl;
+    @include btn-main;
+    background-color: #003569;
+  }
+
+  &-sub {
+    @include btn-xl;
+    @include btn-sub;
+  }
+
+  &-dis {
+    @include btn-xl;
+    @include btn-dis;
+  }
+}
+
+button .ic-list {
+  width: 12px;
+  height: 12px;
+  background: url(../../images/ic_12_list.svg) center no-repeat;
+}
+
+button .ic-add {
+  width: 12px;
+  height: 12px;
+  background: url(../../images/ic_12_plus.svg) center no-repeat;
+}
+
+.ic-guide {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  background: url(../../images/ic_16_guide.svg) center no-repeat;
+  vertical-align: middle;
+}
+
+.circle-minus {
+  border: 0;
+  width: 20px;
+  height: 20px;
+  background: url(../../images/ic_20_cirlce_minus.svg) center no-repeat;
+  cursor: pointer;
+}
+
+.download-cvs i {
+  border: 0;
+  width: 12px;
+  height: 12px;
+  background: url(../../images/ic_12_download.svg) center no-repeat;
+}

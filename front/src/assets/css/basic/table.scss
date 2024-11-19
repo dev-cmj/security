@@ -1,0 +1,144 @@
+
+.tableWrap {
+    border-top: 1px solid #686868;
+    & + .table-tit {
+        margin-top: 40px;
+    }
+    & + .tableWrap {
+        margin-top: 20px;
+    }
+    &.wide {
+        th {
+            width: 327px;
+        }
+        .flexWrap {
+            gap: 12px;
+        }
+    }
+}
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+th,td {
+    vertical-align: middle;
+    border-bottom: 1px solid #E9E9E9;
+}
+th {
+    background-color: #F9F9F9;
+    font-weight: 500;
+    line-height: 1.43;
+    color: #4A4A4A;
+    height: 45px;
+    width: 200px;
+    // max-width: 200px;
+    text-align: center;
+    &.req::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: url(@/assets/images/ic_req.svg) center no-repeat;
+        margin-right: 4px;
+        margin-bottom: 5px;
+        display: inline-block;
+    }
+}
+td {
+    padding: 4px 10px;
+    .checkbox {
+        margin-right: 38px;
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+    .dropdown + input {
+        margin-left: 10px;
+    }
+    .text {
+        font-size: 12px;
+        color: #000000;
+    }
+}
+
+td:has(.rangeWrap) {
+    padding: 26px;
+    padding-left: 60px;
+} 
+
+.table-tit {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 20px;
+    .circle-minus {
+        margin-left: 8px;
+    }
+}
+
+.mergeTable {
+    // display: flex;
+    position: relative;
+    $mergeCellWidth : 175px;
+    width: calc(100% - $mergeCellWidth);
+    .mergeCell {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: $mergeCellWidth;
+        background-color: #F9F9F9;
+        border: 1px solid #E9E9E9;
+        border-top: 0;
+        border-left: 0;
+    }
+    .half {
+        margin-left: $mergeCellWidth;
+        th {
+            width: 152px;
+        }
+    }
+}
+
+
+.collapseWrap {
+    th:first-child {
+        text-align: left;
+        padding-left: 60px;
+    }
+    .controlRow {
+        th {
+            position: relative;
+            padding-right: 36px;
+            color: #000;
+            .collapseArr {
+                position: absolute;
+                top: 26px;
+                right: 20px;
+                width: 16px;
+                height: 16px;
+                background: url(@/assets/images/ic_16_collapse_arr.svg) center no-repeat;
+            }
+            &[aria-expanded="false"] {
+                .collapseArr {
+                    transform: rotate(180deg);
+                }
+            }
+        }   
+    }
+    .subRow {
+        th:first-child {
+            &::before {
+                content: '';
+                display: inline-block;
+                vertical-align: middle;
+                width: 16px;
+                height: 16px;
+                background: url(@/assets/images/ic_16_minus.svg) center no-repeat;
+                margin-right: 2px;
+            }
+        }
+    }
+}

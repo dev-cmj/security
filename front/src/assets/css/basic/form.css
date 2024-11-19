@@ -1,0 +1,330 @@
+@charset "UTF-8";
+input {
+  padding: 0 12px;
+  background: #FFFFFF;
+  border: 1px solid #E9E9E9;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 280px;
+  line-height: 1.43;
+  color: #000;
+  height: 31px;
+  outline: none;
+  font-size: 13px;
+}
+input:focus {
+  border-color: #003569;
+}
+input:hover {
+  color: #0064C0;
+  border-color: #003569;
+}
+input::placeholder {
+  color: #ACACAC;
+}
+input:read-only {
+  color: #68686e !important;
+  background: #F9F9F9 !important;
+  border: 1px solid #C8C8C8 !important;
+}
+
+.view[readonly] {
+  color: #000000 !important;
+  background: white !important;
+  border: none !important;
+  cursor: default;
+}
+
+input:disabled {
+  background: #F9F9F9 !important;
+  border: 1px solid #E9E9E9 !important;
+  color: #C8C8C8 !important;
+}
+input.error {
+  border-color: #FF7997;
+}
+input.error::placeholder {
+  font-weight: 400;
+  color: #FF7997;
+}
+
+input.searchInput {
+  padding-right: 40px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.searchInputWrap {
+  position: relative;
+  width: 280px;
+  display: inline-block;
+}
+.searchInputWrap .searchInputBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  background: url(@/assets/images/icon_16_search.svg) center no-repeat;
+  border: 0;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+
+.fromToDash {
+  margin: 0 6px;
+  color: #000;
+}
+
+input.calendarInput, input.calendarInput-dashboard {
+  padding: 0 12px;
+  background: #FFFFFF;
+  border: 1px solid #E9E9E9;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 280px;
+  line-height: 1.43;
+  height: 31px;
+  outline: none;
+  background: url(@/assets/images/ic_16_calendar.svg) right 14px center no-repeat;
+}
+
+input.calendarInput {
+  color: #000 ;
+}
+
+input.calendarInput-dashboard {
+  color: #000;
+}
+
+input.calendarInput:focus, input.calendarInput-dashboard:focus {
+  border-color: #003569;
+}
+input.calendarInput:hover, input.calendarInput-dashboard:hover {
+  color: #0064C0;
+  border-color: #003569;
+}
+input.calendarInput::-webkit-calendar-picker-indicator, input.calendarInput-dashboard::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+input.calendarInput.search, input.calendarInput-dashboard.search{
+  max-width: 150px;
+}
+
+.select {
+  padding: 0 12px;
+  background: #FFFFFF;
+  border: 1px solid #E9E9E9;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 280px;
+  line-height: 1.43;
+  color: #000;
+  height: 36px;
+  outline: none;
+  background: url(@/assets/images/ic_select_arr.svg) right 15px center/16px no-repeat;
+  text-align: left;
+  font-size: 13px;
+}
+.select:focus {
+  border-color: #003569;
+}
+.select:hover {
+  color: #0064C0;
+  border-color: #003569;
+}
+.select:focus-visible {
+  color: #000;
+  outline: none;
+}
+
+.dropdown {
+  display: inline-block;
+  width: 100%;
+  max-width: 280px;
+}
+.dropdown .select {
+  width: 100%;
+  /* text가 일정 크기 넘으면 뒷부분 ... 으로 보이게하기 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 30px;
+}
+.dropdown .dropdown-menu {
+  min-width: 100%;
+  width: auto;
+  padding: 12px;
+  border: 1px solid #003569;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  margin-top: 9px;
+  overflow:auto;
+}
+.dropdown .dropdown-menu .dropdown-item {
+  width: 100%;
+  padding: 9px 12px;
+  margin: 0;
+  background-color: #fff;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #4A4A4A;
+  border-radius: 6px;
+}
+.dropdown .dropdown-menu .dropdown-item + .dropdown-item {
+  margin-top: 4px;
+}
+.dropdown .dropdown-menu .dropdown-item:hover {
+  color: #0064C0;
+  background: #EFF9FF;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #000;
+}
+.checkbox input {
+  display: none;
+}
+.checkbox::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  background: #fff url(@/assets/images/ic_checkbox.svg) center no-repeat;
+}
+.checkbox:has(:checked)::before {
+  border: 0;
+  background-color: #003569;
+}
+
+.checkbox:has(:disabled)::before {
+  border: 1px solid #C8C8C8 !important;
+  background:  #F9F9F9 url(@/assets/images/ic_16_disabled_minus.svg) center no-repeat;
+}
+
+textarea {
+  padding: 10px 12px;
+  background: #FFFFFF;
+  border: 1px solid #E9E9E9;
+  outline: none;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.43;
+  width: 100%;
+  max-width: 465px;
+  height: 80px;
+  color: #000;
+  resize: none;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+textarea::placeholder {
+  color: #ACACAC;
+}
+textarea:focus {
+  border-color: #003569;
+}
+textarea:hover {
+  color: #0064C0;
+  border-color: #003569;
+}
+textarea:read-only {
+  color: #68686e !important;
+  background: #F9F9F9 !important;
+  border: 1px solid #C8C8C8 !important;
+}
+
+.rangeWrap {
+  display: flex;
+  align-items: center;
+}
+.rangeWrap .rangeConsole {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-weight: 500;
+  color: #0064C0;
+  width: 80px;
+  height: 36px;
+  background: #F8FCFF;
+  border: 1px solid #C7E9FC;
+  border-radius: 6px;
+}
+.rangeWrap .rangeConsole::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  /* 네이티브 외형 감추기 */
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.range {
+  display: inline-flex;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  min-width: 600px;
+}
+.range input[type=radio] {
+  display: none;
+}
+.range label {
+  min-width: 18px;
+  line-height: 1.43;
+  text-align: center;
+  color: #686868;
+  position: relative;
+  padding-top: 28px;
+}
+.range label::before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #F9F9F9;
+  border: 1px solid #C8C8C8;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.range label:has(:checked) {
+  color: #0098ED;
+}
+.range label:has(:checked)::before {
+  background-color: #0098ED;
+  border-color: #0098ED;
+}
+.range label:has(:checked) .value {
+  font-weight: 700;
+}
+.range label::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: calc(100% + 40px);
+  height: 1px;
+  background-color: #E9E9E9;
+  z-index: -1;
+}
+.range label:last-child::after {
+  display: none;
+}
+
+.selectCheck {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}/*# sourceMappingURL=form.css.map */

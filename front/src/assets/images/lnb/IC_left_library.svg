@@ -1,0 +1,7 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <g data-name="library, study, education, shelf, bookshelf, knowledge, book, literature, bookcase, information">
+        <path d="M12 6H8a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Zm-1 8H9V8h2ZM12 20H8a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2ZM12 24H8a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2Z" fill="#4a4a4a" style="stroke-width: 1;"></path>
+        <path d="M26 2h-8a3 3 0 0 0-2 .78A3 3 0 0 0 14 2H6a3 3 0 0 0-3 3v22a3 3 0 0 0 3 3h8a3 3 0 0 0 2-.78 3 3 0 0 0 2 .78h8a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3ZM14 28H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v22a1 1 0 0 1-1 1Zm13-1a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1Z" fill="#4a4a4a" style="stroke-width: 1;"></path>
+        <path d="M24 6h-4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1Zm-1 8h-2V8h2ZM24 20h-4a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2ZM24 24h-4a1 1 0 0 0 0 2h4a1 1 0 0 0 0-2Z" fill="#4a4a4a" style="stroke-width: 1;"></path>
+    </g>
+</svg>

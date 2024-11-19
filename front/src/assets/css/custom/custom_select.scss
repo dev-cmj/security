@@ -1,0 +1,110 @@
+.vf-assistive-text{
+  display:none
+}
+
+.vf-row {
+  display: inline-block !important;
+}
+.vf-multiselect-wrapper {
+  width: inherit !important;
+  height: inherit !important;
+}
+
+.vf-multiselect-options{
+  width: inherit !important;
+  height: inherit !important;
+
+}
+.vf-multiselect{
+  border: 1px solid black !important;
+  margin:10px !important;
+}
+
+
+.vf-multiselect-options .vf-multiselect-option {
+  width: inherit !important;
+  height: inherit !important;
+}
+
+.vf-multiselect-option-selected {
+  background: #e8f5ff !important;
+  border: 1px solid #c7e9fc !important;
+  font-weight: 700;
+  color: #0064c0 !important;
+}
+
+.vf-multiselect-option:hover {
+  background: #e8f5ff !important;
+  border: 1px solid #c7e9fc !important;
+  color: #0064c0 !important;
+}
+
+.vf-multiselect-option-pointed {
+  background: #fff !important;
+  color: #000000 !important;
+}
+
+.vf-multiselect-active {
+  box-shadow: none !important;
+  outline: none!important;
+}
+.vf-multiselect-dropdown {
+  border: 1px solid black !important;
+}
+.vf-floating-label.vf-floating-label-success {
+  display: none !important;
+}
+.vf-multiselect-tag{
+  background: #e8f5ff !important;
+  border: 1px solid #c7e9fc !important;
+  color: #0064c0 !important;
+}
+
+
+//트리구조 정리
+
+.p-tree {
+  border: 1px solid lightgray;
+}
+
+.p-tree-node-content.p-tree-node-selected {
+  background: #e8f5ff !important;
+  border: 1px solid #c7e9fc !important;
+  color: #0064c0 !important;
+}
+
+
+.p-tree-node-content.p-tree-node-selected .p-tree-node-label {
+  color: #0064c0 !important;
+}
+.p-tree-node-toggle-button {
+  color: #0064c0 !important;
+}
+
+.base-tree .p-tree-node[aria-expanded="true"] .p-tree-node-toggle-icon {
+  width: 20px;
+  height: 20px;
+  background: url("@/assets/images/ic_24_lowlink.svg") !important;
+}
+
+.base-tree .p-tree-node .p-tree-node-toggle-icon path {
+  display: none !important;
+}
+
+.base-tree .p-tree-node[aria-expanded="false"] .p-tree-node-toggle-icon {
+  width: 20px;
+  height: 20px;
+  background: url("@/assets/images/ic_24_highlink.svg") !important;
+}
+
+.base-tree .p-tree-node[aria-expanded="true"] .p-tree-node-leaf {
+  background: url("@/assets/images/ic_24_linking.svg") no-repeat !important;
+}
+
+
+.base-tree .folder{
+  width: 20px;
+  height: 20px;
+  background: url("@/assets/images/ic_24_dash_user.svg") no-repeat !important;
+}
+

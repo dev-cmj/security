@@ -1,0 +1,15 @@
+.ag-cell {
+    text-align: center;
+}
+
+.ag-header-cell-label {
+    justify-content: center !important;
+}
+
+.ag-root-wrapper {
+    border: none !important;
+}
+
+.ag-theme-alpine {
+    --ag-font-family: 'Noto Sans KR' !important;
+}

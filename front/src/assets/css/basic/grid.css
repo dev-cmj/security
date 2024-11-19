@@ -1,0 +1,85 @@
+.grid {
+  border-top: 1px solid #686868;
+  border-bottom: 1px solid #C8C8C8;
+}
+.grid .table {
+  table-layout: fixed;
+  width: 100%;
+  border: 0;
+  margin: 0;
+}
+.grid .thead th {
+  vertical-align: middle;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.43;
+  color: #4A4A4A;
+  width: auto;
+  height: 30px;
+  background-color: #F9F9F9;
+  border: 1px solid #E9E9E9;
+  border-top: 0;
+}
+.grid .thead th:first-child {
+  border-left: 0;
+}
+.grid .thead th:last-child {
+  border-right: 0;
+}
+.grid .thead th:has(.checkbox) {
+  width: 56px;
+}
+.grid .thead th:has(.grid-no) {
+  width: 56px;
+}
+.grid .thead th .th-filter {
+  border: 0;
+  padding-right: 20px;
+  padding-left: 10px;
+  background: url(@/assets/images/ic_16_down.svg) right center no-repeat;
+}
+.grid .tbody td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 16px;
+  line-height: 1.43;
+  height: 50px;
+  border: 1px solid #E9E9E9;
+  color: #000;
+  font-size: 13px;
+}
+.grid .tbody td:first-child {
+  border-left: 0;
+}
+.grid .tbody td:last-child {
+  border-right: 0;
+}
+.grid .tbody td .select {
+  font-size: 12px;
+  background-position: right 10px center;
+}
+.grid .tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.grid-tit {
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.block-40 {
+  margin-top: 40px;
+}
+
+.detailLink {
+  display: block;
+  width: 100%;
+  color: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.detailLink:hover {
+  color: #0098ED;
+}/*# sourceMappingURL=grid.css.map */

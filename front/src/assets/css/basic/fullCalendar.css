@@ -1,0 +1,77 @@
+:root {
+  --fc-border-color: transparent;
+}
+
+.fullcalendar {
+  max-width: 1120px;
+}
+.fullcalendar .calendarTop {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.42;
+  text-align: center;
+  color: #4A4A4A;
+  margin-bottom: 40px;
+}
+.fullcalendar .calendarTop .cal-left {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: url(@/assets/images/icon_16_arrow_left.svg) center no-repeat;
+  margin-right: 16px;
+}
+.fullcalendar .calendarTop .cal-right {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: url(@/assets/images/icon_16_arrow_right.svg) center no-repeat;
+  margin-left: 16px;
+}
+.fullcalendar .calendarTop .download-cvs {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.fullcalendar .grid {
+  margin-bottom: 40px;
+}
+.fullcalendar .modal-body {
+  padding-bottom: 77px !important;
+}
+.fullcalendar .fc th {
+  width: auto;
+  height: 39px;
+  background-color: transparent;
+}
+.fullcalendar .fc th > .fc-scrollgrid-sync-inner {
+  border-top: 1px solid #4A4A4A;
+  padding: 10px 12px;
+  text-align: left;
+  color: #7E7E7E;
+  font-weight: 700;
+  font-size: 14px;
+}
+.fullcalendar .fc th:first-child > .fc-scrollgrid-sync-inner {
+  border-top-color: #FF7997;
+  color: #FF7997;
+}
+.fullcalendar .fc .fc-daygrid-day-top {
+  flex-direction: row;
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #000000;
+}
+.fullcalendar .fc-day-sun .fc-daygrid-day-top {
+  color: #FF7997;
+}
+.fullcalendar .fc-theme-standard td,
+.fullcalendar .fc-theme-standard th {
+  padding: 1.5px 6px;
+  border-width: 0;
+}/*# sourceMappingURL=fullCalendar.css.map */

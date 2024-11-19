@@ -1,0 +1,78 @@
+$themeColor: #003569;
+
+.selectedMenu {
+  background-color: $themeColor;
+}
+
+.gnb .menu .ac a {
+  border-bottom-color: $themeColor;
+}
+
+.gnb .menu .ac .top {
+  border-bottom-color: $themeColor;
+}
+
+.pagination .active .page-link {
+  border: 1px solid $themeColor;
+  color: $themeColor;
+}
+
+.gridWrap .top .control .new {
+  background: $themeColor;
+}
+
+.lnb .menu li.ac:has(.depth3) .depth3 .depth3-item.ac a {
+  background-color: $themeColor;
+}
+
+.step .item.focus .text {
+  color: $themeColor;
+}
+
+.divisionWrap .control .new {
+  background: $themeColor;
+}
+
+.gridWrap .top .control .ok {
+  background: $themeColor;
+}
+
+.tab-round .nav-link.active {
+  background: $themeColor;
+}
+
+.btn-l-main {
+  background: $themeColor;
+}
+
+.btn-m-main {
+  background: $themeColor;
+}
+
+.btn {
+  background: $themeColor;
+}
+
+.checkbox:has(:checked)::before {
+  background-color: $themeColor;
+}
+
+.dropdown-toggle:hover {
+  border-color: $themeColor;
+}
+
+.dropdown-menu {
+  border: 1px solid $themeColor;
+}
+.card-view .item {
+  color: $themeColor;
+}
+.card-view .item:hover {
+  border: 1px solid $themeColor;
+}
+.clickable-cell {
+  color: $themeColor;
+}
+.vue-spinner {
+  color: $themeColor;
+}

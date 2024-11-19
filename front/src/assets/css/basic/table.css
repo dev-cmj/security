@@ -1,0 +1,134 @@
+.tableWrap {
+  border-top: 1px solid #686868;
+}
+.tableWrap + .table-tit {
+  margin-top: 40px;
+}
+.tableWrap + .tableWrap {
+  margin-top: 20px;
+}
+.tableWrap.wide th {
+  width: 327px;
+}
+.tableWrap.wide .flexWrap {
+  gap: 12px;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  vertical-align: middle;
+  border-bottom: 1px solid #E9E9E9 !important;
+}
+
+th {
+  background-color: #F9F9F9;
+  font-weight: 500;
+  line-height: 1.43;
+  color: #4A4A4A;
+  height: 55px;
+  width: 200px;
+  text-align: center !important;
+  font-size: 13px;
+}
+th.req::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: url(@/assets/images/ic_req.svg) center no-repeat;
+  margin-right: 4px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+td {
+  padding: 5px 15px;
+}
+td .checkbox {
+  margin-right: 38px;
+}
+td .checkbox:last-child {
+  margin-right: 0;
+}
+td .dropdown + input {
+  margin-left: 10px;
+}
+td .text {
+  font-size: 12px;
+  color: #000000;
+}
+
+td:has(.rangeWrap) {
+  padding: 20px;
+  padding-left: 60px;
+}
+
+.table-tit {
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+.table-tit .circle-minus {
+  margin-left: 8px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.mergeTable {
+  position: relative;
+  width: calc(100% - 175px);
+}
+.mergeTable .mergeCell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 175px;
+  background-color: #F9F9F9;
+  border: 1px solid #E9E9E9;
+  border-top: 0;
+  border-left: 0;
+}
+.mergeTable .half {
+  margin-left: 175px;
+}
+.mergeTable .half th {
+  width: 152px;
+}
+
+.collapseWrap th:first-child {
+  text-align: left;
+  padding-left: 60px;
+}
+.collapseWrap .controlRow th {
+  position: relative;
+  padding-right: 36px;
+  color: #000;
+}
+.collapseWrap .controlRow th .collapseArr {
+  position: absolute;
+  top: 26px;
+  right: 20px;
+  width: 16px;
+  height: 16px;
+  background: url(@/assets/images/ic_16_collapse_arr.svg) center no-repeat;
+}
+.collapseWrap .controlRow th[aria-expanded=false] .collapseArr {
+  transform: rotate(180deg);
+}
+.collapseWrap .subRow th:first-child::before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background: url(@/assets/images/ic_16_minus.svg) center no-repeat;
+  margin-right: 2px;
+}/*# sourceMappingURL=table.css.map */

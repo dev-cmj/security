@@ -1,0 +1,310 @@
+// BASIC FORM
+@mixin inputHover {
+  &:focus {
+    border-color: #003569;
+  }
+  &:hover {
+    color: #0064C0;
+    border-color: #003569;
+  }
+}
+
+@mixin default {
+  padding: 0 12px;
+  background: #FFFFFF;
+  border: 1px solid #E9E9E9;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 280px;
+  line-height: 1.43;
+  color: #000;
+  height: 31px;
+  outline: none;
+  @include inputHover;
+}
+
+input {
+  @include default;
+
+  &::placeholder {
+    color: #ACACAC;
+  }
+
+  &:read-only {
+    color: #000000 !important;
+    background: #F9F9F9 !important;
+    border: 1px solid #C8C8C8 !important;
+  }
+
+  &:disabled {
+    background: #F9F9F9 !important;
+    border: 1px solid #E9E9E9 !important;
+    color: #C8C8C8 !important;
+  }
+
+  &.error {
+    border-color: #FF7997;
+
+    &::placeholder {
+      font-weight: 400;
+      color: #FF7997;
+    }
+  }
+}
+
+input.searchInput {
+  padding-right: 40px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.searchInputWrap {
+  position: relative;
+  width: 280px;
+  display: inline-block;
+
+  .searchInputBtn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background-color: transparent;
+    background: url(@/assets/images/icon_16_search.svg) center no-repeat;
+    border: 0;
+    text-indent: -9999px;
+    overflow: hidden;
+  }
+}
+
+.fromToDash {
+  margin: 0 6px;
+  color: #000;
+}
+
+input.calendarInput {
+  @include default;
+  background: url(@/assets/images/ic_16_calendar.svg) right 14px center no-repeat;
+
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0;
+  }
+}
+
+.select {
+  @include default;
+  padding-right: 31px;
+  background: url(../../images/ic_select_arr.svg) right 8px center/16px no-repeat;
+  color: #ACACAC;
+  text-align: left;
+
+  &:focus-visible {
+    color: #000;
+    outline: none;
+  }
+
+  // position: relative;
+  // .optionWrap {
+  //     position: absolute;
+  //     top: 0;
+  //     left: 0;
+  //     width: 100%;
+  // }
+}
+
+.dropdown {
+  display: inline-block;
+  width: 100%;
+  max-width: 280px;
+
+  .select {
+    width: 100%;
+  }
+
+  .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    color: black;
+    border-color: #E9E9E9;
+  }
+
+  .dropdown-menu {
+    min-width: 100%;
+    width: auto;
+    padding: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    margin-top: 6px !important;
+
+    .dropdown-item {
+      width: 100%;
+      padding: 9px 12px;
+      margin: 0;
+      background-color: #fff;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #4A4A4A;
+      border-radius: 6px;
+
+      & + .dropdown-item {
+        margin-top: 4px;
+      }
+
+      &:hover {
+        color: #0064C0;
+        background: #EFF9FF;
+      }
+    }
+  }
+}
+
+.checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #000;
+
+  input {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #E9E9E9;
+    border-radius: 4px;
+    background: #fff url(@/assets/images/ic_checkbox.svg) center no-repeat;
+  }
+
+  &:has(:checked)::before {
+    border: 0;
+    background-color: #003569;
+  }
+}
+
+textarea {
+  padding: 10px 12px;
+  background: #FFFFFF;
+  border: 1px solid #E9E9E9;
+  outline: none;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.43;
+  width: 100%;
+  max-width: 465px;
+  height: 80px;
+  color: #000;
+  resize: none;
+
+  &::placeholder {
+    color: #ACACAC;
+  }
+
+  @include inputHover;
+}
+
+
+.rangeWrap {
+  display: flex;
+  align-items: center;
+
+  .rangeConsole {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: 500;
+    color: #0064C0;
+    width: 80px;
+    height: 36px;
+    background: #F8FCFF;
+    border: 1px solid #C7E9FC;
+    border-radius: 6px;
+
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      /* 네이티브 외형 감추기 */
+      -moz-appearance: none;
+      appearance: none;
+    }
+  }
+}
+
+.range {
+  display: inline-flex;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  min-width: 600px;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  label {
+    min-width: 18px;
+    line-height: 1.43;
+    text-align: center;
+    color: #686868;
+    position: relative;
+    padding-top: 28px;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #F9F9F9;
+      border: 1px solid #C8C8C8;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &:has(:checked) {
+      color: #0098ED;
+
+      &::before {
+        background-color: #0098ED;
+        border-color: #0098ED;
+      }
+
+      .value {
+        font-weight: 700;
+      }
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 9px;
+      left: 50%;
+      width: calc(100% + 40px);
+      height: 1px;
+      background-color: #E9E9E9;
+      z-index: -1;
+    }
+
+    &:last-child::after {
+      display: none;
+    }
+  }
+}
+
+// 셀렉트 + 체크박스 조합 Wrap
+.selectCheck {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

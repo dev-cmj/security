@@ -41,8 +41,10 @@ public class ADAuthenticationProvider extends ChainableAuthenticationProvider {
         if (isAuthenticated) {
             log.info("AD 인증 성공: {}", username);
             return new UsernamePasswordAuthenticationToken(userPrincipal, null, getAuthorities(username));
+        } else {
+            throw new AuthenticationException("AD 인증에 실패했습니다.") {
+            };
         }
-        return null; // 인증 실패 시 null 반환하여 다음 Provider로 넘어감
     }
 
     private boolean authenticateWithAD(String username, String password) {

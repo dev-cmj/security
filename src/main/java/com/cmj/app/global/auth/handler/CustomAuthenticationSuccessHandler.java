@@ -22,7 +22,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     private final JwtCookieManager jwtCookieManager;
 
@@ -38,8 +37,5 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         String token = jwtProvider.createToken(user.getUsername());
         jwtCookieManager.addTokenToCookie(response, token);
-
-        objectMapper.writeValue(response.getWriter(), "Login successful");
-
     }
 }

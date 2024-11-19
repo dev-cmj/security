@@ -11,10 +11,10 @@ public record LoginRequest(
 
     public void validate() {
         if (username == null || username.isBlank()) {
-            throw new IllegalArgumentException("username is blank");
+            throw new IllegalArgumentException("아이디를 입력해주세요.");
         }
         if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException("password is blank");
+            throw new IllegalArgumentException("비밀번호를 입력해주세요.");
         }
     }
 

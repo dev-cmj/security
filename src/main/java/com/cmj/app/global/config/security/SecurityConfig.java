@@ -1,6 +1,11 @@
 package com.cmj.app.global.config.security;
 
+import com.cmj.app.global.auth.filter.CustomLoginFilter;
+import com.cmj.app.global.auth.filter.CustomLogoutFilter;
+import com.cmj.app.global.auth.handler.CustomAccessDeniedHandler;
 import com.cmj.app.global.auth.jwt.JwtAuthenticationFilter;
+import com.cmj.app.global.auth.manager.CustomAuthenticationManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,13 +27,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomLoginFilter customLoginFilter;
+    private final CustomLogoutFilter customLogoutFilter;
+    private final CustomAuthenticationManager authenticationManager;
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
-                                                   JwtAuthenticationFilter jwtAuthenticationFilter
-    ) throws Exception {
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -52,23 +61,22 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
+                .authenticationManager(authenticationManager) // 커스텀 인증 매니저 설정
+
+                .addFilterBefore(customLoginFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customLogoutFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .formLogin(AbstractHttpConfigurer::disable) // 필요 시 폼 로그인 설정 비활성화
+                .logout(AbstractHttpConfigurer::disable) // 필요 시 로그아웃 설정 비활성화
+
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.accessDeniedHandler(customAccessDeniedHandler))
         ;
 
         return http.build();
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
-        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        builder.userDetailsService(userDetailsService);
-        return builder.build();
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

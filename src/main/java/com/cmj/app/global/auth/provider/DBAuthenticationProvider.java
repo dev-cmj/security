@@ -41,7 +41,7 @@ public class DBAuthenticationProvider extends ChainableAuthenticationProvider {
             log.info("DB 인증 성공: {}", username);
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } else {
-            throw new AuthenticationException("DB 인증 실패") {
+            throw new AuthenticationException("비밀번호가 일치하지 않습니다.") {
             };
         }
     }

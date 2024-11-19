@@ -20,27 +20,21 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
-    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
 
-        String errMsg = "Invalid Username or Password";
-
+        // 응답 상태 및 Content-Type 설정
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8"); // UTF-8 설정
 
-        if(exception instanceof BadCredentialsException) {
-            errMsg = "Invalid Username or Password";
-        } else if(exception instanceof DisabledException) {
-            errMsg = "Locked";
-        } else if(exception instanceof CredentialsExpiredException) {
-            errMsg = "Expired password";
-        }
+        // 사용자 정의 메시지 작성
+        String errorMessage = "{\"message\": \"" + exception.getMessage() + "\"}";
 
-        log.error("Authentication failed: {}", errMsg);
-        objectMapper.writeValue(response.getWriter(), errMsg);
+        // 응답에 메시지 쓰기
+        response.getWriter().write(errorMessage);
     }
 }

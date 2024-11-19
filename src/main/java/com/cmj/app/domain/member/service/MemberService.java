@@ -39,7 +39,7 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member foundMember = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
 
         Collection<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(foundMember.getRole().name()));
 

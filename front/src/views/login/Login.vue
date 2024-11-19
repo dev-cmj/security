@@ -25,15 +25,12 @@ const login = async () => {
     return;
   }
 
-  try {
-    axios.defaults.withCredentials = true; // 쿠키를 전송하기 위해
-    const response = await axios.post(`http://localhost:8080/api/login`, {
-      username: loginId.value,
-      password: password.value
-    });
-  } catch (e) {
-   alert(e);
+  if (password.value === "") {
+    alert("비밀번호를 입력해주세요.");
+    return;
   }
+
+  await store.login(loginId.value, password.value);
 };
 
 const setLoginId = savedId => {
@@ -106,8 +103,8 @@ const showFindPassword = () => {
     </div>
     <div class="login_bottom"></div>
   </div>
-<!--  <FindIdModal v-model="findIdModalHide"/>-->
-<!--  <FindPasswordModal v-model="findPasswordModalHide"/>-->
+  <!--  <FindIdModal v-model="findIdModalHide"/>-->
+  <!--  <FindPasswordModal v-model="findPasswordModalHide"/>-->
 </template>
 
 <style scoped>

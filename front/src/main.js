@@ -14,6 +14,7 @@ import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
 import initI18n from "./composables/i18n.js";
 import "./assets/css/main.scss";
+import { userManageStore} from "@/stores/user/userStore.js";
 
 const init = async () => {
   const i18n = initI18n();
@@ -40,5 +41,24 @@ const init = async () => {
     .use(router)
     .mount("#app");
 };
+
+router.beforeEach((to, from, next) => {
+  const userStore = userManageStore();
+
+  if (to.path !== "/login" && !userStore.isLoggedIn()) {
+    console.log("로그인이 필요합니다.");
+    return next({
+      path: "/login",
+      query: { redirect: to.fullPath }, // 원래 요청했던 경로 저장
+    });
+  }
+
+  if (to.path === "/login" && userStore.isLoggedIn()) {
+    console.log("이미 로그인된 사용자입니다.");
+    return next("/");
+  }
+
+  next(); // 모든 경우 진행
+});
 
 init();

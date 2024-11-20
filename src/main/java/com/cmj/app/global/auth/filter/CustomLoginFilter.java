@@ -37,7 +37,7 @@ public class CustomLoginFilter extends AbstractAuthenticationProcessingFilter {
                              CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         // 특정 URL과 HTTP 메서드로 필터 동작 설정
-        super(new AntPathRequestMatcher("/api/login", POST.name()));
+        super(new AntPathRequestMatcher("/api/auth/login", POST.name()));
         this.setAuthenticationManager(authenticationManager);
         this.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
         this.setAuthenticationFailureHandler(customAuthenticationFailureHandler);

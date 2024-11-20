@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtCookieManager jwtCookieManager;
     private final MemberService memberService;
 
-    private static final List<String> EXCLUDE_PATHS = List.of("/css/", "/js/", "/images/", "/favicon.ico", "/error", "/api/login", "/api/logout");
+    private static final List<String> EXCLUDE_PATHS = List.of("/css/", "/js/", "/images/", "/favicon.ico", "/error", "/api/auth/login", "/api/auth/logout");
 
 
     @Override
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //                if (blacklistService.isTokenBlacklisted(token)) { // 블랙리스트 확인
 //                    log.info("블랙리스트에 등록된 토큰입니다.");
 //                } else {
-//                    authenticateUserFromToken(token, request); // 인증 처리
+                    authenticateUserFromToken(token, request); // 인증 처리
 //                }
             } else {
                 log.info("JWT 만료 또는 유효하지 않은 토큰");

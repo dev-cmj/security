@@ -2,6 +2,9 @@
 import SampleContent from "@/components/sample/SampleContent.vue";
 import SampleNav from "@/components/sample/SampleNav.vue";
 import MainContent from "@/components/layout/main/MainContent.vue";
+import {userManageStore} from "@/stores/user/userStore.js";
+
+const store = userManageStore();
 </script>
 
 <template class="main">
@@ -12,7 +15,7 @@ import MainContent from "@/components/layout/main/MainContent.vue";
 
   <!--  <Header></Header>-->
   <!--  <SideMenuNav></SideMenuNav>-->
-    <MainContent :is-logged-in="true"></MainContent>
+  <MainContent :is-logged-in="store.isLoggedIn()"/>
 
   <!-- 샘플 확인용  -->
 <!--  <SampleNav></SampleNav>-->

@@ -1,43 +1,58 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
+import router from "@/router/clovirVdiRouter.js";
 
 export const userManageStore = defineStore("userStore", () => {
-
   const currentUser = ref(null);
   const loggedIn = ref(false);
   const needToChangePassword = ref(false);
 
-  const setCurrentUser = () => {
-    // service api 호출
-  };
-
   const login = async (username, password) => {
-
     try {
-      axios.defaults.withCredentials = true; // 쿠키를 전송하기 위해
-      const response = await axios.post(`http://localhost:8080/api/login`, {
+      axios.defaults.withCredentials = true;
+      await axios.post("/api/auth/login", {
         username,
         password,
       });
 
       loggedIn.value = true;
-      needToChangePassword.value = false;
-    } catch (e) {
-      const message = e.response?.data.message;
-      console.log("로그인 실패", e)
-      if (message !== undefined) {
-        alert(message);
-      } else {
-        alert("로그인에 실패하였습니다.");
-      }
-    }
+      needToChangePassword.value = false; // 임시로 false 처리 (추후 service api 호출)
 
+      if (needToChangePassword.value) {
+        await router.push("/clovirvdi/member/changePassword");
+      } else {
+        await router.push("/");
+      }
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await axios.post("/api/auth/logout");
+      loggedIn.value = false;
+      currentUser.value = null;
+      await router.push("/login");
+
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const setLoggedIn = () => {
     loggedIn.value = true;
   };
 
-  const logout = () => {
+  const setLoggedOut = () => {
     loggedIn.value = false;
+  }
+
+  const setCurrentUser = (user) => {
+    currentUser.value = user;
   };
 
   const setNeedToChangePassword = () => {
@@ -57,9 +72,11 @@ export const userManageStore = defineStore("userStore", () => {
   };
 
   return {
-    setCurrentUser,
     login,
     logout,
+    setLoggedIn,
+    setLoggedOut,
+    setCurrentUser,
     setNeedToChangePassword,
     getCurrentUser,
     isLoggedIn,

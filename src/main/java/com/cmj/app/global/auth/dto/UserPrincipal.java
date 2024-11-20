@@ -43,6 +43,15 @@ public class UserPrincipal implements UserDetails, Serializable {
         return username;
     }
 
+    public UserPrincipal toResponse() {
+        return UserPrincipal.builder()
+                .username(username)
+                .name(name)
+                .email(email)
+                .authorities(authorities)
+                .build();
+    }
+
     public static UserPrincipal of(String username, String password, String name, String email, Collection<? extends GrantedAuthority> authorities) {
         return UserPrincipal.builder()
                 .username(username)

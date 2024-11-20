@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (request) ->
-                                request.requestMatchers(AntPathRequestMatcher.antMatcher("/api/login")).permitAll()
+                                request.requestMatchers(AntPathRequestMatcher.antMatcher("/api/auth/**")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()

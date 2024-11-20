@@ -12,4 +12,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Slf4j
 public class GlobalInterceptor implements HandlerInterceptor {
 
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("==================== BEGIN ====================");
+        log.info("Request URI : {}", request.getRequestURI());
+        return true;
+    }
 }

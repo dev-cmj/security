@@ -2,7 +2,6 @@
 <script setup>
 
 import {ref} from "vue";
-import axios from "axios";
 import IdSaveBox from "@/views/login/IdSaveBox.vue";
 // import FindIdModal from "@/components/common/layout/login/FindIdModal.vue";
 // import FindPasswordModal from "@/components/common/layout/login/FindPasswordModal.vue";
@@ -20,17 +19,28 @@ let findPasswordModalHide = ref(false);
 
 
 const login = async () => {
-  if (loginId.value === "") {
-    alert("아이디를 입력해주세요.");
-    return;
-  }
 
-  if (password.value === "") {
-    alert("비밀번호를 입력해주세요.");
-    return;
-  }
+  try {
+    if (loginId.value === "") {
+      alert("아이디를 입력해주세요.");
+      return;
+    }
 
-  await store.login(loginId.value, password.value);
+    if (password.value === "") {
+      alert("비밀번호를 입력해주세요.");
+      return;
+    }
+
+    await store.login(loginId.value, password.value);
+  } catch (e) {
+    const result = e.response?.data;
+    if (result) {
+      alert(result.message);
+    } else {
+      alert("로그인에 실패하였습니다.");
+    }
+    password.value = "";
+  }
 };
 
 const setLoginId = savedId => {
@@ -51,7 +61,7 @@ const showFindPassword = () => {
   <div class="loginForm">
     <div class="login_input">
       <div class="login_logo">
-        <img src="@/assets/images/logo.png" style="width: 240px"/>
+        <img src="@/assets/images/logo.png" style="width: 240px" alt=""/>
       </div>
       <div class="login_contents">
         <form>

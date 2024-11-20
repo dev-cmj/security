@@ -23,7 +23,7 @@ public class CustomLogoutFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        if ("/api/logout".equals(request.getRequestURI())) {
+        if ("/api/auth/logout".equals(request.getRequestURI())) {
 
             // 로그아웃 핸들러 호출
             logoutHandler.logout(request, response, null);

@@ -6,4 +6,5 @@ package com.cmj.app.global.encode;
 public interface TextCryptService {
     String encrypt(String value);
     String decrypt(String value);
+    String getType();
 }

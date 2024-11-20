@@ -11,14 +11,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Service
-public class TextCryptServiceImpl implements TextCryptService {
+public class AESTextCryptService implements TextCryptService {
 
     private final String transformation;
     private final String algorithm;
     private final String seedKey;
     private final String ivParameter;
 
-    public TextCryptServiceImpl(@Value("${crypt.transformation}") String transformation,
+    public AESTextCryptService(@Value("${crypt.transformation}") String transformation,
                                 @Value("${crypt.algorithm}") String algorithm,
                                 @Value("${crypt.seedkey}") String seedKey,
                                 @Value("${crypt.ivparameter}") String ivParameter) {
@@ -50,6 +50,11 @@ public class TextCryptServiceImpl implements TextCryptService {
         } catch (Exception e) {
             throw new RuntimeException("Decryption failed: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public String getType() {
+        return "AES";
     }
 
     private String processCipher(String text, int mode, String seedKey, String iv) throws Exception {

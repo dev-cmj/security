@@ -4,13 +4,13 @@ import com.cmj.app.domain.member.entity.Member;
 import com.cmj.app.domain.member.entity.MemberRole;
 import com.cmj.app.domain.member.repository.MemberRepository;
 import com.cmj.app.global.auth.dto.UserPrincipal;
+import com.cmj.app.global.encode.PasswordCryptService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +23,13 @@ import java.util.Collections;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordCryptService passwordCryptService;
 
     @PostConstruct
     public void init() {
         Member admin = Member.builder()
                 .username("admin")
-                .password(passwordEncoder.encode("admin"))
+                .password(passwordCryptService.encrypt("admin"))
                 .name("admin")
                 .email("test")
                 .role(MemberRole.ADMIN).build();
@@ -72,7 +72,7 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void update(Member member) {
-        member.update(member, passwordEncoder);
+        member.update(member, passwordCryptService);
     }
 
     @Transactional

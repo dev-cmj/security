@@ -1,14 +1,9 @@
 package com.cmj.app.domain.member.entity;
 
 import com.cmj.app.global.domain.BaseEntity;
+import com.cmj.app.global.encode.PasswordCryptService;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -39,10 +34,9 @@ public class Member extends BaseEntity {
     private MemberRole role;
 
 
-
-    public void update(Member member, PasswordEncoder passwordEncoder) {
+    public void update(Member member, PasswordCryptService passwordCryptService) {
         this.username = member.getUsername();
-        this.password = passwordEncoder.encode(member.getPassword());
+        this.password = passwordCryptService.encrypt(member.getPassword());
         this.email = member.getEmail();
         this.role = member.getRole();
     }

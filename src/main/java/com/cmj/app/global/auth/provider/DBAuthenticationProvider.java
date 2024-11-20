@@ -2,6 +2,7 @@ package com.cmj.app.global.auth.provider;
 
 
 import com.cmj.app.domain.member.service.MemberService;
+import com.cmj.app.global.encode.PasswordCryptService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import static com.cmj.app.global.util.SecureUtil.decrypt;
@@ -23,7 +23,7 @@ import static com.cmj.app.global.util.SecureUtil.decrypt;
 public class DBAuthenticationProvider extends ChainableAuthenticationProvider {
 
     private final MemberService memberService;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordCryptService passwordCryptService;
 
     @Value("${rsa.private-key}")
     private String privateKey;
@@ -44,7 +44,7 @@ public class DBAuthenticationProvider extends ChainableAuthenticationProvider {
         // DB에서 사용자 조회
         UserDetails userDetails = authenticateWithDB(username);
 
-        if (userDetails != null && passwordEncoder.matches(decrypt, userDetails.getPassword())) {
+        if (userDetails != null && passwordCryptService.matches(decrypt, userDetails.getPassword())) {
             log.info("DB 인증 성공: {}", username);
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } else {

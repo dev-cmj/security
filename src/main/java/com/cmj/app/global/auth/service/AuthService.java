@@ -7,6 +7,7 @@ import com.cmj.app.domain.member.entity.Member;
 import com.cmj.app.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,9 @@ public class AuthService {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${rsa.public-key}")
+    private String publicKey;
+
     @Transactional
     public SignUpResponse signup(SignUpRequest signUpRequest) {
         if (memberService.existsByUsername(signUpRequest.username())) {
@@ -26,6 +30,10 @@ public class AuthService {
 
         Member member = memberService.save(SignUpRequest.toEntity(signUpRequest, passwordEncoder));
         return SignUpResponse.of(member.getId(), member.getUsername(), member.getEmail(), member.getRole());
+    }
+
+    public String getPublicKey() {
+        return publicKey;
     }
 
     public boolean isAlreadyLoggedIn(HttpServletRequest request) {

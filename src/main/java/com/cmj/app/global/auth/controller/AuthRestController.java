@@ -36,4 +36,9 @@ public class AuthRestController {
         return ResponseEntity.ok(signUpResponse);
     }
 
+    @GetMapping("/public-key")
+    public ResponseEntity<?> getPublicKey() {
+        return ResponseEntity.ok(authService.getPublicKey());
+    }
+
 }

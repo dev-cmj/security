@@ -2,10 +2,8 @@
 import BaseModal from "@/components/common/modal/BaseModal.vue";
 import { defineModel, ref, watchEffect } from "vue";
 import axios from "axios";
-import useAlert from "@/hooks/alert.js";
 import { useI18n } from "vue-i18n";
 
-const alert = useAlert();
 const i18n = useI18n();
 
 const hide = defineModel({ default: false });

@@ -9,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.0",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "@primevue/themes": "^4.2.1",
     "@rushstack/eslint-patch": "^1.10.2",
     "@tinymce/tinymce-vue": "^6.0.0",
-
     "@vueform/vueform": "^1.11.0",
     "@vueuse/core": "^10.9.0",
     "@vueuse/integrations": "^10.11.0",
@@ -22,9 +23,11 @@
     "bootstrap": "^5.3.3",
     "bootstrap-vue-3": "^0.5.1",
     "bootstrap-vue-next": "^0.21.2",
+    "crypto-js": "^4.2.0",
     "file-saver": "^2.0.5",
     "fs": "^0.0.1-security",
     "js-cookie": "^3.0.5",
+    "jsencrypt": "^3.3.2",
     "pinia": "^2.1.7",
     "primevue": "^4.2.1",
     "quill": "^2.0.2",

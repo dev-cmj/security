@@ -3,20 +3,28 @@
 
 import {ref} from "vue";
 import IdSaveBox from "@/views/login/IdSaveBox.vue";
-// import FindIdModal from "@/components/common/layout/login/FindIdModal.vue";
-// import FindPasswordModal from "@/components/common/layout/login/FindPasswordModal.vue";
-// import SelectTenantModal from "@/clovirvdi/tenant/SelectTenantModal.vue";
-import {useI18n} from "vue-i18n";
+import FindIdModal from "@/views//login/FindIdModal.vue";
+import FindPasswordModal from "@/views//login/FindPasswordModal.vue";
 import {userManageStore} from "@/stores/user/userStore.js";
+import JSEncrypt from 'jsencrypt';
+
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios"; // Import the icons
 
 const store = userManageStore();
-let i18n = useI18n();
 
 let loginId = ref("");
 let password = ref("");
 let findIdModalHide = ref(false);
 let findPasswordModalHide = ref(false);
+let passwordVisible = ref(false); // New state for password visibility
+let publicKey = ref("");
 
+const getPublicKey = async () => {
+  const response = await axios.get('/api/auth/public-key');
+  publicKey = response.data;
+};
 
 const login = async () => {
 
@@ -31,7 +39,12 @@ const login = async () => {
       return;
     }
 
-    await store.login(loginId.value, password.value);
+    const encrypt = new JSEncrypt();
+    await getPublicKey();
+    encrypt.setPublicKey(publicKey);
+    const encryptedPassword = encrypt.encrypt(password.value);
+    await store.login(loginId.value, encryptedPassword);
+
   } catch (e) {
     const result = e.response?.data;
     if (result) {
@@ -55,6 +68,9 @@ const showFindPassword = () => {
   findPasswordModalHide.value = true;
 };
 
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
 </script>
 
 <template>
@@ -75,17 +91,27 @@ const showFindPassword = () => {
               class="login_input_text input-lg font16px"
               placeholder="아이디"
           />
-          <input
-              v-model="password"
-              @keyup.enter="login"
-              type="password"
-              autocomplete="new-password"
-              name="password"
-              id="password"
-              class="login_input_text input-lg font16px"
-              placeholder="비밀번호"
-              style="clear: both"
-          />
+          <div class="password-container">
+            <div class="password-container">
+              <input
+                  v-model="password"
+                  @keyup.enter="login"
+                  :type="passwordVisible ? 'text' : 'password'"
+                  autocomplete="new-password"
+                  name="password"
+                  id="password"
+                  class="login_input_text input-lg font16px"
+                  placeholder="비밀번호"
+              />
+              <FontAwesomeIcon style="margin-top : -5px; width:18px;"
+                  :icon="passwordVisible ? faEyeSlash : faEye"
+                  class="password-toggle"
+                  @click="togglePasswordVisibility"
+              />
+            </div>
+            <i class="fa-solid fa-eye"></i>
+          </div>
+
           <div id="bottom-box">
             <IdSaveBox :login-id="loginId" @set-login-id="setLoginId"/>
           </div>
@@ -113,11 +139,28 @@ const showFindPassword = () => {
     </div>
     <div class="login_bottom"></div>
   </div>
-  <!--  <FindIdModal v-model="findIdModalHide"/>-->
-  <!--  <FindPasswordModal v-model="findPasswordModalHide"/>-->
+    <FindIdModal v-model="findIdModalHide"/>
+    <FindPasswordModal v-model="findPasswordModalHide"/>
 </template>
 
 <style scoped>
+.password-container {
+  align-items: center;
+  position: relative;
+}
+
+.password-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+}
+
+
 label[required]:after {
   content: " *";
   color: red;

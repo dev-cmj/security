@@ -8,15 +8,10 @@ import com.cmj.app.global.auth.manager.CustomAuthenticationManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -46,7 +41,9 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         (request) ->
-                                request.requestMatchers(AntPathRequestMatcher.antMatcher("/api/auth/**")).permitAll()
+                                request.requestMatchers("/api/auth/logout").permitAll()
+                                        .requestMatchers("/api/auth/login").anonymous() // 로그인 api 는 익명 유저만 가능
+                                        .requestMatchers("/api/auth/public-key").anonymous() // 공개키 api 는 익명 유저만 가능
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()

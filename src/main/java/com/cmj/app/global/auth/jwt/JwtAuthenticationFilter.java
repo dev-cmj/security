@@ -1,6 +1,8 @@
 package com.cmj.app.global.auth.jwt;
 
 import com.cmj.app.domain.member.service.MemberService;
+import com.cmj.app.global.exception.ErrorResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +27,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final JwtCookieManager jwtCookieManager;
     private final MemberService memberService;
+    private final ObjectMapper objectMapper;
+
+    private static final String CONTENT_TYPE = "application/json";
+    private static final int UNAUTHORIZED = HttpServletResponse.SC_UNAUTHORIZED;
+    private static final int FORBIDDEN = HttpServletResponse.SC_FORBIDDEN;
 
     private static final List<String> EXCLUDE_PATHS = List.of("/css/", "/js/", "/images/", "/favicon.ico", "/error", "/api/auth/login", "/api/auth/logout");
 
@@ -40,17 +47,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = jwtCookieManager.getTokenFromCookie(request);
             if (token != null && jwtProvider.validateToken(token)) { // 토큰 유효성 검사
-
-//                if (blacklistService.isTokenBlacklisted(token)) { // 블랙리스트 확인
-//                    log.info("블랙리스트에 등록된 토큰입니다.");
-//                } else {
-                    authenticateUserFromToken(token, request); // 인증 처리
-//                }
-            } else {
-                log.info("JWT 만료 또는 유효하지 않은 토큰");
+                authenticateUserFromToken(token, request); // 인증 처리
             }
+
+            //                if (blacklistService.isTokenBlacklisted(token)) { // 블랙리스트 확인
+//                                    ErrorResponse errorResponse = new ErrorResponse(FORBIDDEN, "Access denied: blacklisted token.");
+//                sendErrorResponse(response, errorResponse);
+//                return;
+
         } catch (Exception e) {
             log.error("JWT 인증 오류", e);
+            ErrorResponse errorResponse = new ErrorResponse(UNAUTHORIZED, "Authentication is required.");
+            sendErrorResponse(response, errorResponse);
         }
         filterChain.doFilter(request, response);
     }
@@ -58,11 +66,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void authenticateUserFromToken(String token, HttpServletRequest request) {
         String username = jwtProvider.getClaims(token).getSubject();
         UserDetails userDetails = memberService.loadUserByUsername(username);
-
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    private void sendErrorResponse(HttpServletResponse response, ErrorResponse errorResponse) throws IOException {
+        SecurityContextHolder.clearContext();
+        jwtCookieManager.deleteTokenFromCookie(response);
+
+        response.setStatus(errorResponse.status());
+        response.setContentType(CONTENT_TYPE);
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+    }
 
 }

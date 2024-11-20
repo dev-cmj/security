@@ -34,7 +34,7 @@ onMounted(() => {
       v-model="idSaveCheck"
     />
     <label for="idSaveCheck"></label>
-    <div class="checkbox_text">{{ $t("login.id.save") }}</div>
+    <div class="checkbox_text">아이디 저장</div>
   </div>
 </template>
 

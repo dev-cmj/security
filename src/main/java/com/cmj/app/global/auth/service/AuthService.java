@@ -20,9 +20,6 @@ public class AuthService {
     private final MemberService memberService;
     private final PasswordCryptService passwordCryptService;
 
-    @Getter
-    @Value("${rsa.public-key}")
-    private String publicKey;
 
     @Transactional
     public SignUpResponse signup(SignUpRequest signUpRequest) {
@@ -32,10 +29,6 @@ public class AuthService {
 
         Member member = memberService.save(SignUpRequest.toEntity(signUpRequest, passwordCryptService));
         return SignUpResponse.of(member.getId(), member.getUsername(), member.getEmail(), member.getRole());
-    }
-
-    public boolean isAlreadyLoggedIn(HttpServletRequest request) {
-        return request.getUserPrincipal() != null;
     }
 
 

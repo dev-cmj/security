@@ -18,10 +18,10 @@ public class AESTextCryptService implements TextCryptService {
     private final String seedKey;
     private final String ivParameter;
 
-    public AESTextCryptService(@Value("${crypt.transformation}") String transformation,
-                                @Value("${crypt.algorithm}") String algorithm,
-                                @Value("${crypt.seedkey}") String seedKey,
-                                @Value("${crypt.ivparameter}") String ivParameter) {
+    public AESTextCryptService(@Value("${crypt.aes.transformation}") String transformation,
+                                @Value("${crypt.aes.algorithm}") String algorithm,
+                                @Value("${crypt.aes.seedkey}") String seedKey,
+                                @Value("${crypt.aes.ivparameter}") String ivParameter) {
         this.transformation = Objects.requireNonNull(transformation, "Transformation cannot be null");
         this.algorithm = Objects.requireNonNull(algorithm, "Algorithm cannot be null");
         this.seedKey = Objects.requireNonNull(seedKey, "SeedKey cannot be null");

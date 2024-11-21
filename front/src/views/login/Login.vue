@@ -10,7 +10,9 @@ import JSEncrypt from 'jsencrypt';
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios"; // Import the icons
+import axios from "axios";
+import router from "@/router/clovirVdiRouter.js";
+import SignUpModal from "@/views/login/SignUpModal.vue"; // Import the icons
 
 const store = userManageStore();
 
@@ -18,6 +20,7 @@ let loginId = ref("");
 let password = ref("");
 let findIdModalHide = ref(false);
 let findPasswordModalHide = ref(false);
+let findSignUpModalHide = ref(false);
 let passwordVisible = ref(false); // New state for password visibility
 let publicKey = ref("");
 
@@ -64,6 +67,10 @@ const showFindId = () => {
   findIdModalHide.value = true;
 };
 
+const showSignUp = () => {
+  findSignUpModalHide.value = true;
+};
+
 const showFindPassword = () => {
   findPasswordModalHide.value = true;
 };
@@ -103,7 +110,7 @@ const togglePasswordVisibility = () => {
                   class="login_input_text input-lg font16px"
                   placeholder="비밀번호"
               />
-              <FontAwesomeIcon style="margin-top : -5px; width:18px;"
+              <FontAwesomeIcon style="width:18px;"
                   :icon="passwordVisible ? faEyeSlash : faEye"
                   class="password-toggle"
                   @click="togglePasswordVisibility"
@@ -118,22 +125,13 @@ const togglePasswordVisibility = () => {
           <div id="loginSubmit" class="login-btn" @click="login()">로그인</div>
         </form>
         <div class="login_info"></div>
-        <div
-            type="button"
-            @click="showFindId"
-            class="findID_button findUser_button"
-            style="float: left; margin-top: 20px; margin-left: 40px; color: #929594"
-        >
-          아이디 찾기
-        </div>
-        <div style="float: left; margin-top: 18px; color: #929594; margin-left: 19px">|</div>
-        <div
-            type="button"
-            @click="showFindPassword"
-            class="findPWD_button findUser_button"
-            style="float: right; margin-top: 20px; margin-right: 40px; color: #929594"
-        >
-          비밀번호 찾기
+
+        <div class="login_bottom">
+          <div class="findUser_button" @click="showSignUp">회원가입</div>
+          <div class="separator">|</div>
+          <div class="findUser_button" @click="showFindId">아이디 찾기</div>
+          <div class="separator">|</div>
+          <div class="findUser_button" @click="showFindPassword">비밀번호 찾기</div>
         </div>
       </div>
     </div>
@@ -141,6 +139,7 @@ const togglePasswordVisibility = () => {
   </div>
     <FindIdModal v-model="findIdModalHide"/>
     <FindPasswordModal v-model="findPasswordModalHide"/>
+    <SignUpModal v-model="findSignUpModalHide"/>
 </template>
 
 <style scoped>
@@ -224,7 +223,7 @@ input[type="text"] {
   width: 400px;
   text-align: center;
   margin: 0 auto;
-  padding: 0px 0px 0px 0px;
+  padding: 0 0 0 0;
 }
 
 .login_input ul {
@@ -287,27 +286,6 @@ input[type="text"] {
   padding-right: 59px;
 }
 
-.login_bottom {
-  width: 400px;
-  margin: 30px auto 0;
-  position: relative;
-}
-
-.login_bottom div {
-  color: #696969;
-  display: inline-block;
-  font-size: 10px;
-  position: absolute;
-  top: 10px;
-  left: 130px;
-}
-
-.login_info {
-  font-size: 12px;
-  color: #3c404a;
-  margin-top: 40px;
-}
-
 .font16px {
   font-size: 16px;
 }
@@ -316,5 +294,114 @@ input[type="text"] {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+}
+
+.findUser_button {
+  cursor: pointer;
+  font-size: 14px;
+  color: #696969;
+  text-decoration: none;
+  margin: 20px 10px;
+  display: inline-block;
+}
+
+.findUser_button:hover {
+  text-decoration: underline;
+  color: #003569;
+}
+
+.findID_button,
+.findPWD_button {
+  margin: 0 20px;
+  display: inline-block;
+}
+
+.loginForm {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.login_logo img {
+  width: 240px;
+  margin: 0 auto;
+  display: block;
+}
+
+.login_contents {
+  margin-top: 20px;
+}
+
+.login_input_text {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.login-btn {
+  cursor: pointer;
+  width: 100%;
+  height: 40px;
+  border-radius: 5px;
+  background-color: #003569;
+  color: #ffffff;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #002855;
+}
+
+.password-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  cursor: pointer;
+  color: #ccc;
+}
+
+.password-toggle:hover {
+  color: #333;
+}
+
+#bottom-box {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.login_bottom {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login_bottom div {
+  font-size: 12px;
+  color: #696969;
+  display: inline-block;
+}
+
+.login_bottom .separator {
+  margin: 0 10px;
+  color: #ccc;
 }
 </style>

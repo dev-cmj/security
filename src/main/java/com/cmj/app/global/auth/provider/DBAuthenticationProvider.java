@@ -3,18 +3,16 @@ package com.cmj.app.global.auth.provider;
 
 import com.cmj.app.domain.member.service.MemberService;
 import com.cmj.app.global.encode.PasswordCryptService;
+import com.cmj.app.global.encode.RSATextCryptService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import static com.cmj.app.global.util.SecureUtil.decrypt;
 
 @Component
 @ConditionalOnProperty(value = "auth.provider.db", havingValue = "true", matchIfMissing = true)
@@ -24,9 +22,7 @@ public class DBAuthenticationProvider extends ChainableAuthenticationProvider {
 
     private final MemberService memberService;
     private final PasswordCryptService passwordCryptService;
-
-    @Value("${rsa.private-key}")
-    private String privateKey;
+    private final RSATextCryptService rsaTextCryptService;
 
     @PostConstruct
     public void init() {
@@ -39,7 +35,7 @@ public class DBAuthenticationProvider extends ChainableAuthenticationProvider {
 
         String username = authentication.getName();
         String rawPassword = authentication.getCredentials().toString();
-        String decrypt = decrypt(rawPassword, privateKey);
+        String decrypt = rsaTextCryptService.decrypt(rawPassword);
 
         // DB에서 사용자 조회
         UserDetails userDetails = authenticateWithDB(username);

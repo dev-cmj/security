@@ -3,23 +3,16 @@ import SampleContent from "@/components/sample/SampleContent.vue";
 import SampleNav from "@/components/sample/SampleNav.vue";
 import MainContent from "@/components/layout/main/MainContent.vue";
 import {userManageStore} from "@/stores/user/userStore.js";
+import Header from "@/components/layout/header/Header.vue";
+import SideMenuNav from "@/components/layout/side/SideMenuNav.vue";
 
 const store = userManageStore();
 </script>
 
 <template class="main">
-  <!-- TODO.기존 clovirVDI (진행 시 참고, 완료 되면 삭제)-->
-  <!--  <Header v-if="isLoggedIn && exist"/>-->
-  <!--  <LeftMenu v-if="isLoggedIn && exist" />-->
-  <!--  <MainContent v-if="!loading.isMainLoading" :isLoggedIn="isLoggedIn" :class="!exist ? 'exist-content' : ''" />-->
-
-  <!--  <Header></Header>-->
-  <!--  <SideMenuNav></SideMenuNav>-->
+  <Header v-if="store.isLoggedIn()" />
+  <SideMenuNav v-if="store.isLoggedIn()" />
   <MainContent :is-logged-in="store.isLoggedIn()"/>
-
-  <!-- 샘플 확인용  -->
-<!--  <SampleNav></SampleNav>-->
-<!--  <SampleContent></SampleContent>-->
 </template>
 
 <style scoped>

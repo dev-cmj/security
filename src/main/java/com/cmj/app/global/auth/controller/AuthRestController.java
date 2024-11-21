@@ -4,6 +4,7 @@ import com.cmj.app.global.auth.dto.SignUpRequest;
 import com.cmj.app.global.auth.dto.SignUpResponse;
 import com.cmj.app.global.auth.dto.UserPrincipal;
 import com.cmj.app.global.auth.service.AuthService;
+import com.cmj.app.global.encode.RSATextCryptService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthRestController {
 
     private final AuthService authService;
+    private final RSATextCryptService rsaTextCryptService;
 
     @GetMapping("/status")
     public ResponseEntity<?> status(Authentication authentication) {
@@ -28,7 +30,7 @@ public class AuthRestController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request) {
-        if (authService.isAlreadyLoggedIn(request)) {
+        if (request.getUserPrincipal() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("로그아웃 후 회원가입을 시도해주세요.");
         }
 
@@ -38,7 +40,7 @@ public class AuthRestController {
 
     @GetMapping("/public-key")
     public ResponseEntity<?> getPublicKey() {
-        return ResponseEntity.ok(authService.getPublicKey());
+        return ResponseEntity.ok(rsaTextCryptService.getPublicKey());
     }
 
 }

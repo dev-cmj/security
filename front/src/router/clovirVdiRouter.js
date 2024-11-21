@@ -12,7 +12,7 @@ const routes = [
     path: "/login",
     name: "clovirvdi.login",
     component: () => import("@/views/login/Login.vue"),
-  }
+  },
   // {
   //   path: "/clovirvdi/sample1",
   //   name: "clovirvdi.sample1",

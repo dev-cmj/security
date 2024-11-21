@@ -1,48 +1,43 @@
 <script setup>
-import { computed, ref, watch } from "vue";
-import { useStore } from "vuex";
+import { defineProps, defineEmits } from "vue";
+import { useRouter } from "vue-router";
+import { userManageStore } from "@/stores/user/userStore.js"; // UserStore 가져오기
 
+// Props와 Emits 정의
+defineProps({
+  menu: {
+    type: Object,
+    required: true,
+  },
+  clickedPageUrl: {
+    type: [String, null],
+    default: null,
+  },
+});
 
-const props = defineProps(["menu"]);
-const store = useStore();
-
-const clickedPageUrl = ref(null);
-const selectedTopMenu = computed(() => store.state.selectedTopMenu);
-
-const clickedTopMenu = menu => {
-  store.commit("setSelectedTopMenu", menu);
-  store.commit("setSelectedSubMenu", menu);
-  init();
-};
-
-const init = () => {
-  clickedPageUrl.value = selectedTopMenu.value.pageUrl;
-
-  console.log(props.menu.pageUrl , "props.menu.pageUr");
-  console.log(clickedPageUrl , "clickedPageUrl");
-};
-
-
-
-watch(
-    () => selectedTopMenu.value,
-    // eslint-disable-next-line no-unused-vars
-    () => {
-      init();
-    },
-);
-// TODO.유정 확인
-// init();
+const emit = defineEmits(["menu-click"]);
+const userStore = userManageStore();
+const router = useRouter();
 </script>
 
 <template>
-  <li v-if="props.menu.parent == null || props.menu.depth == 1" :class="{ ac: props.menu.pageUrl == clickedPageUrl }">
-<!--    <router-link :to="props.menu.pageUrl" @click.prevent="clickedTopMenu(menu)">{{ props.menu.menuName }}</router-link>-->
-    <router-link  class="top" to="" @click.prevent="clickedTopMenu(menu)">{{ props.menu.menuName }}</router-link>
-<!--    <div>{{props.menu.menuName}}</div>-->
+  <li @click="handleClick" :class="{ ac: menu.link === clickedPageUrl }">
+    <a>{{ menu.name }}</a>
   </li>
 </template>
 
 <style scoped>
+li {
+  cursor: pointer;
+}
 
+li.ac {
+  font-weight: bold;
+  color: #007bff;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
 </style>

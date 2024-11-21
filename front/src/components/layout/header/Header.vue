@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import Logo from "@/components/layout/header/Logo.vue";
+import HeaderNav from "@/components/layout/header/HeaderNav.vue";
 </script>
 <!--
  Note. 현재는 메뉴를 뿌려 주는 데이터 값을 가져올 수 없어
@@ -11,7 +12,7 @@ import Logo from "@/components/layout/header/Logo.vue";
   <div class="menu-layout-3">
     <div class="gnb">
       <Logo></Logo>
-      <!--      <HeaderNav></HeaderNav>-->
+            <HeaderNav></HeaderNav>
       <!--      <LocaleDropdown />-->
       <!--      <UserTaskAlarm></UserTaskAlarm>-->
       <!--      <UserInfo></UserInfo>-->

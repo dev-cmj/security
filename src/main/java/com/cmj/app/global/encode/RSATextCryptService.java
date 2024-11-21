@@ -1,6 +1,7 @@
 package com.cmj.app.global.encode;
 
 import com.cmj.app.global.util.Base64Util;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Objects;
 
 @Service
+@Getter
 public class RSATextCryptService implements TextCryptService {
 
     private final String publicKey;

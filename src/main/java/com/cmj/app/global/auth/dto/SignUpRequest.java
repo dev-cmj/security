@@ -3,12 +3,16 @@ package com.cmj.app.global.auth.dto;
 import com.cmj.app.domain.member.entity.Member;
 import com.cmj.app.domain.member.entity.MemberRole;
 import com.cmj.app.global.encode.PasswordCryptService;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 
 @Builder
 public record SignUpRequest(
+        @NotEmpty(message = "아이디는 필수 입력 값입니다.")
         String username,
+        @NotEmpty(message = "비밀번호는 필수 입력 값입니다.")
         String password,
+        @NotEmpty(message = "이메일은 필수 입력 값입니다.")
         String email
 ) {
 

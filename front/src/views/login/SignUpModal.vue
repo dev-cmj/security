@@ -35,7 +35,7 @@ const submit = async () => {
 
   // 서버로 데이터 전송
   try {
-    await axios.post("/api/member/signup", {
+    await axios.post("/api/auth/signup", {
       id: formData.value.id,
       password: formData.value.password,
       email: formData.value.email,

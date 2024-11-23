@@ -1,58 +1,65 @@
 <script setup>
 import BaseModal from "@/components/common/modal/BaseModal.vue";
 import {defineModel, ref, watchEffect} from "vue";
-import axios from "axios";
+import {userManageStore} from "@/stores/user/userStore.js";
 
 const hide = defineModel({default: false});
+const store = userManageStore();
 
 const formData = ref({
-  id: "",
+  username: "",
   password: "",
   confirmPassword: "",
+  name: "",
   email: "",
 });
 
-const error = ref(null);
-
 const submit = async () => {
   // 입력값 검증
-  if (formData.value.id === "") {
-    alert("아이디를 입력해주세요.");
-    return;
-  }
-  if (formData.value.password === "") {
-    alert("비밀번호를 입력해주세요.");
-    return;
-  }
-  if (formData.value.password !== formData.value.confirmPassword) {
-    alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-    return;
-  }
-  if (formData.value.email === "") {
-    alert("이메일을 입력해주세요.");
-    return;
-  }
-
-  // 서버로 데이터 전송
   try {
-    await axios.post("/api/auth/signup", {
-      id: formData.value.id,
-      password: formData.value.password,
-      email: formData.value.email,
-    });
+    if (formData.value.username === "") {
+      alert("아이디를 입력해주세요.");
+      return;
+    }
+    if (formData.value.password === "") {
+      alert("비밀번호를 입력해주세요.");
+      return;
+    }
+    if (formData.value.password !== formData.value.confirmPassword) {
+      alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return;
+    }
+
+    if (formData.value.name === "") {
+      alert("이름을 입력해주세요.");
+      return;
+    }
+
+    if (formData.value.email === "") {
+      alert("이메일을 입력해주세요.");
+      return;
+    }
+
+    await store.signup(formData.value.username, formData.value.password, formData.value.name, formData.value.email);
     alert("회원가입이 완료되었습니다.");
     hide.value = false;
   } catch (e) {
-    alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+    const result = e.response?.data;
+    if (result) {
+      alert(result.message);
+    } else {
+      alert("회원가입에 실패하였습니다.");
+    }
   }
 };
 
 // 모달 초기화
 const resetForm = () => {
   formData.value = {
-    id: "",
+    username: "",
     password: "",
     confirmPassword: "",
+    name: "",
     email: "",
   };
 };
@@ -69,12 +76,12 @@ watchEffect(() => {
     <template #content>
       <!-- 아이디 -->
       <div class="mb-3" style="margin-top: 14px">
-        <label for="id" class="form-label" required>아이디</label>
+        <label for="username" class="form-label" required>아이디</label>
         <input
             type="text"
-            v-model="formData.id"
+            v-model="formData.username"
             class="form-control"
-            name="id"
+            name="username"
             placeholder="아이디"
         />
       </div>
@@ -103,6 +110,18 @@ watchEffect(() => {
         />
       </div>
 
+      <!-- 이름 -->
+      <div class="mb-3">
+        <label for="name" class="form-label" required>이름</label>
+        <input
+            type="text"
+            v-model="formData.name"
+            class="form-control"
+            name="name"
+            placeholder="이름"
+        />
+      </div>
+
       <!-- 이메일 -->
       <div class="mb-3">
         <label for="email" class="form-label" required>이메일</label>
@@ -116,11 +135,12 @@ watchEffect(() => {
       </div>
     </template>
     <template #footer
-    ><div class="submit-block">
-      <div class="submit-button form-control" type="button" @click="submit">
-        회원가입
+    >
+      <div class="submit-block">
+        <div class="submit-button form-control" type="button" @click="submit">
+          회원가입
+        </div>
       </div>
-    </div>
     </template>
   </BaseModal>
 </template>

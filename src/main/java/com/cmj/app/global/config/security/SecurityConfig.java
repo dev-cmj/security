@@ -43,6 +43,7 @@ public class SecurityConfig {
                         (request) ->
                                 request.requestMatchers("/api/auth/logout").permitAll()
                                         .requestMatchers("/api/auth/login").anonymous() // 로그인 api 는 익명 유저만 가능
+                                        .requestMatchers("/api/auth/signup").anonymous() // 회원가입 api 는 익명 유저만 가능
                                         .requestMatchers("/api/auth/public-key").anonymous() // 공개키 api 는 익명 유저만 가능
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()

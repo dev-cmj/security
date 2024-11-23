@@ -5,6 +5,7 @@ import com.cmj.app.domain.member.entity.MemberRole;
 import com.cmj.app.domain.member.repository.MemberRepository;
 import com.cmj.app.global.auth.dto.UserPrincipal;
 import com.cmj.app.global.encode.PasswordCryptService;
+import com.cmj.app.global.encode.RSATextCryptService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -63,6 +64,10 @@ public class MemberService implements UserDetailsService {
 
     public boolean existsByUsername(String username) {
         return memberRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return memberRepository.existsByEmail(email);
     }
 
     @Transactional

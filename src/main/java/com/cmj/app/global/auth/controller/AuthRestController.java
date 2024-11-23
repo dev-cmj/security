@@ -6,6 +6,7 @@ import com.cmj.app.global.auth.dto.UserPrincipal;
 import com.cmj.app.global.auth.service.AuthService;
 import com.cmj.app.global.encode.RSATextCryptService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignUpRequest signUpRequest, HttpServletRequest request) {
+    public ResponseEntity<?> signup(@RequestBody @Valid SignUpRequest signUpRequest, HttpServletRequest request) {
         if (request.getUserPrincipal() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("로그아웃 후 회원가입을 시도해주세요.");
         }
